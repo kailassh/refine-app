@@ -1,0 +1,176 @@
+/**
+ * Component utilities using @apply directive for common Tailwind patterns.
+ * 
+ * These utilities follow the DRY principle by extracting repeated class
+ * combinations into semantic, reusable classes. They maintain the exact
+ * same styling as the original Tailwind classes but provide better
+ * maintainability and readability.
+ * 
+ * Organization follows our class ordering system:
+ * 1. Layout (display, position, flex, grid)
+ * 2. Box model (width, height, overflow) 
+ * 3. Spacing (margin, padding)
+ * 4. Typography (font, text, leading, tracking)
+ * 5. Color (background, text, border colors)
+ * 6. Effects (shadow, opacity, transform, transition)
+ * 7. State (hover, focus, active, disabled)
+ */
+
+/* ===========================================
+   BUTTON COMPONENTS
+   =========================================== */
+
+.btn-primary {
+  @apply inline-flex items-center justify-center
+         px-6 py-3
+         text-base font-medium
+         bg-gray-900 text-white
+         rounded-lg
+         transition-colors duration-200
+         hover:bg-gray-800
+         focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2
+         disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center
+         px-6 py-3
+         text-base font-medium
+         bg-white text-gray-700 border border-gray-300
+         rounded-lg
+         transition-colors duration-200
+         hover:bg-gray-50
+         focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2
+         disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+/* ===========================================
+   INPUT COMPONENTS  
+   =========================================== */
+
+.input-default {
+  @apply w-full
+         px-4 py-3
+         text-base border border-gray-300 rounded-lg
+         transition-colors duration-200
+         hover:border-gray-400
+         focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent
+         disabled:bg-gray-50 disabled:cursor-not-allowed;
+}
+
+.input-error {
+  @apply w-full
+         px-4 py-3
+         text-base border border-red-300 rounded-lg
+         transition-colors duration-200
+         focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent
+         disabled:bg-gray-50 disabled:cursor-not-allowed;
+}
+
+.input-success {
+  @apply w-full
+         px-4 py-3
+         text-base border border-green-300 rounded-lg
+         transition-colors duration-200
+         focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent
+         disabled:bg-gray-50 disabled:cursor-not-allowed;
+}
+
+.input-label {
+  @apply block
+         text-sm font-medium text-gray-700;
+}
+
+.input-error-message {
+  @apply text-sm text-red-600;
+}
+
+/* ===========================================
+   LAYOUT COMPONENTS
+   =========================================== */
+
+.page-container {
+  @apply min-h-screen bg-gray-50
+         flex flex-col;
+}
+
+.content-center {
+  @apply flex-1
+         flex items-center justify-center
+         px-4 py-12 sm:px-6 lg:px-8;
+}
+
+.form-section {
+  @apply w-full max-w-md
+         space-y-8;
+}
+
+.header-section {
+  @apply px-6 py-6 sm:px-8;
+}
+
+.footer-section {
+  @apply px-6 py-8 sm:px-8;
+}
+
+/* ===========================================
+   TYPOGRAPHY COMPONENTS
+   =========================================== */
+
+.heading-primary {
+  @apply text-3xl sm:text-4xl font-medium text-gray-900
+         leading-tight;
+}
+
+.heading-secondary {
+  @apply text-2xl font-medium text-gray-900;
+}
+
+.text-description {
+  @apply text-lg text-gray-600;
+}
+
+.text-small {
+  @apply text-sm text-gray-500;
+}
+
+.text-link {
+  @apply underline text-gray-500
+         hover:text-gray-700
+         focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2
+         rounded;
+}
+
+/* ===========================================
+   SPACING COMPONENTS
+   =========================================== */
+
+.space-y-content {
+  @apply space-y-8;
+}
+
+.space-y-form {
+  @apply space-y-4;
+}
+
+.space-y-text {
+  @apply space-y-3;
+}
+
+/* ===========================================
+   LOADING/STATE COMPONENTS  
+   =========================================== */
+
+.loading-spinner {
+  @apply animate-spin -ml-1 mr-3
+         h-5 w-5
+         text-current;
+}
+
+.loading-spinner-circle {
+  @apply opacity-25;
+}
+
+.loading-spinner-path {
+  @apply opacity-75;
+}
