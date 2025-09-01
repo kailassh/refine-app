@@ -26,9 +26,10 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
-import { type AuthState } from '../types/auth';
+import { type AuthState, type SupabaseUser } from '../types/auth';
 import { useSupabaseAuth } from './useSupabaseAuth';
 import SupabaseAuthService from '../services/supabase';
+import { supabase } from '../services/supabaseClient';
 
 export const useAuth = () => {
   // Initialize authentication state with default values
@@ -67,7 +68,7 @@ export const useAuth = () => {
    */
   const startOTPTimer = useCallback(() => {
     stopOTPTimer(); // Clear any existing timer
-    
+
     setAuthState(prev => ({
       ...prev,
       otpTimer: {
@@ -76,11 +77,11 @@ export const useAuth = () => {
         canResend: false
       }
     }));
-    
+
     const interval = setInterval(() => {
       setAuthState(prev => {
         const newTimeRemaining = prev.otpTimer.timeRemaining - 1;
-        
+
         if (newTimeRemaining <= 0) {
           clearInterval(interval);
           return {
@@ -92,7 +93,7 @@ export const useAuth = () => {
             }
           };
         }
-        
+
         return {
           ...prev,
           otpTimer: {
@@ -102,7 +103,7 @@ export const useAuth = () => {
         };
       });
     }, 1000);
-    
+
     setTimerInterval(interval);
   }, [stopOTPTimer]);
 
@@ -117,17 +118,17 @@ export const useAuth = () => {
    */
   const loginWithEmail = useCallback(async (email: string) => {
     setAuthState(prev => ({ ...prev, isLoading: true, error: null }));
-    
+
     try {
       const result = await supabaseAuth.sendOTPToEmail(email);
-      
+
       if (!result.success) {
         throw new Error(result.error || 'Failed to send OTP');
       }
-      
+
       // Start OTP timer (2 minutes = 120 seconds)
       startOTPTimer();
-      
+
       setAuthState(prev => ({
         ...prev,
         isLoading: false,
@@ -162,17 +163,17 @@ export const useAuth = () => {
     }
 
     setAuthState(prev => ({ ...prev, isLoading: true, error: null }));
-    
+
     try {
       const result = await supabaseAuth.verifyOTPCode(authState.pendingEmail, otpCode);
-      
+
       if (!result.success || !result.user) {
         throw new Error(result.error || 'Failed to verify OTP');
       }
-      
+
       // Clear timer
       stopOTPTimer();
-      
+
       setAuthState({
         isLoading: false,
         error: null,
@@ -239,13 +240,13 @@ export const useAuth = () => {
    */
   const logout = useCallback(async () => {
     stopOTPTimer();
-    
+
     try {
       await supabaseAuth.signOut();
     } catch (error) {
       console.error('Error during logout:', error);
     }
-    
+
     // Reset authentication state to initial values
     setAuthState({
       isLoading: false,
@@ -264,21 +265,77 @@ export const useAuth = () => {
 
   // Initialize auth state from stored session on mount
   useEffect(() => {
-    const initializeAuth = () => {
-      const storedSession = SupabaseAuthService.getStoredSession();
-      if (storedSession && storedSession.user) {
-        const user = SupabaseAuthService.transformSupabaseUser(storedSession.user);
-        setAuthState(prev => ({
-          ...prev,
-          isAuthenticated: true,
-          authStep: 'authenticated',
-          user,
-          isLoading: false
-        }));
+    const initializeAuth = async () => {
+      setAuthState(prev => ({ ...prev, isLoading: true }));
+
+      try {
+        const storedSession = await SupabaseAuthService.getStoredSession();
+        if (storedSession && storedSession.user) {
+          const user = SupabaseAuthService.transformSupabaseUser(storedSession.user);
+          setAuthState(prev => ({
+            ...prev,
+            isAuthenticated: true,
+            authStep: 'authenticated',
+            user,
+            isLoading: false
+          }));
+        } else {
+          setAuthState(prev => ({ ...prev, isLoading: false }));
+        }
+      } catch (error) {
+        console.error('Error initializing auth:', error);
+        setAuthState(prev => ({ ...prev, isLoading: false }));
       }
     };
 
     initializeAuth();
+  }, []);
+
+  // Listen for Supabase auth state changes
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        console.log('Supabase auth event:', event, session);
+
+        if (event === 'SIGNED_IN' && session?.user) {
+          const user = SupabaseAuthService.transformSupabaseUser(session.user as SupabaseUser);
+          setAuthState(prev => ({
+            ...prev,
+            isAuthenticated: true,
+            authStep: 'authenticated',
+            user,
+            isLoading: false,
+            error: null,
+            pendingEmail: null
+          }));
+        } else if (event === 'SIGNED_OUT') {
+          setAuthState({
+            isLoading: false,
+            error: null,
+            isAuthenticated: false,
+            authStep: 'email_input',
+            user: null,
+            pendingEmail: null,
+            otpTimer: {
+              timeRemaining: 0,
+              isActive: false,
+              canResend: true
+            }
+          });
+        } else if (event === 'TOKEN_REFRESHED' && session?.user) {
+          const user = SupabaseAuthService.transformSupabaseUser(session.user as SupabaseUser);
+          setAuthState(prev => ({
+            ...prev,
+            user,
+            isAuthenticated: true
+          }));
+        }
+      }
+    );
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   // Cleanup timer on unmount

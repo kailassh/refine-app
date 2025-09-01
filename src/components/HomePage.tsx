@@ -53,21 +53,21 @@ export const HomePage: React.FC<HomePageProps> = ({
       />
 
       {/* Main Content */}
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         {/* Welcome Section */}
         <div className="mb-8">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="p-6 bg-white border rounded-lg border-gray-200 shadow-sm">
             <div className="text-center space-y-4">
               <h1 className="heading-primary text-center">
                 Welcome to Text Refine App
               </h1>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              <p className="max-w-2xl mx-auto text-lg text-gray-600">
                 You're successfully authenticated and ready to start refining your text. 
                 The main application features will be built here.
               </p>
               
               {/* User Welcome */}
-              <div className="bg-gray-50 rounded-lg p-4 max-w-md mx-auto">
+              <div className="max-w-md mx-auto p-4 bg-gray-50 rounded-lg">
                 <p className="text-sm font-medium text-gray-900">
                   Hello, {user.email}!
                 </p>
@@ -87,7 +87,7 @@ export const HomePage: React.FC<HomePageProps> = ({
         {/* Feature Placeholder Sections */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {/* Text Refinement Feature */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="p-6 bg-white border rounded-lg border-gray-200 shadow-sm">
             <div className="flex items-center space-x-3 mb-4">
               <div className="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-lg">
                 <svg 
@@ -112,7 +112,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
 
           {/* History Feature */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="p-6 bg-white border rounded-lg border-gray-200 shadow-sm">
             <div className="flex items-center space-x-3 mb-4">
               <div className="flex items-center justify-center w-10 h-10 bg-green-100 rounded-lg">
                 <svg 
@@ -137,7 +137,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
 
           {/* Settings Feature */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="p-6 bg-white border rounded-lg border-gray-200 shadow-sm">
             <div className="flex items-center space-x-3 mb-4">
               <div className="flex items-center justify-center w-10 h-10 bg-purple-100 rounded-lg">
                 <svg 
@@ -170,13 +170,13 @@ export const HomePage: React.FC<HomePageProps> = ({
 
         {/* Getting Started Section */}
         <div className="mt-8">
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200 p-6">
+          <div className="p-6 bg-gradient-to-r from-blue-50 to-indigo-50 border rounded-lg border-blue-200">
             <h2 className="text-xl font-medium text-gray-900 mb-4">
               🚀 Getting Started
             </h2>
             <div className="space-y-3">
               <div className="flex items-start space-x-3">
-                <div className="flex items-center justify-center w-6 h-6 bg-blue-100 text-blue-600 rounded-full text-sm font-medium">
+                <div className="flex items-center justify-center w-6 h-6 text-sm font-medium bg-blue-100 rounded-full text-blue-600">
                   1
                 </div>
                 <p className="text-gray-700">
@@ -184,7 +184,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 </p>
               </div>
               <div className="flex items-start space-x-3">
-                <div className="flex items-center justify-center w-6 h-6 bg-blue-100 text-blue-600 rounded-full text-sm font-medium">
+                <div className="flex items-center justify-center w-6 h-6 text-sm font-medium bg-blue-100 rounded-full text-blue-600">
                   2
                 </div>
                 <p className="text-gray-700">
@@ -192,7 +192,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 </p>
               </div>
               <div className="flex items-start space-x-3">
-                <div className="flex items-center justify-center w-6 h-6 bg-blue-100 text-blue-600 rounded-full text-sm font-medium">
+                <div className="flex items-center justify-center w-6 h-6 text-sm font-medium bg-blue-100 rounded-full text-blue-600">
                   3
                 </div>
                 <p className="text-gray-700">

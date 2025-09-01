@@ -12,10 +12,7 @@ import {
   type SupabaseVerifyOtpResponse,
   type SupabaseMCPResult,
   type SupabaseSignInOptions,
-  type SupabaseUser,
-  type SupabaseSession,
-  type SupabaseOtpType,
-  type User
+  type SupabaseOtpType
 } from '../types/auth';
 import SupabaseAuthService from './supabase';
 

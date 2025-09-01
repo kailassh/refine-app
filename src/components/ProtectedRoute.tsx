@@ -47,7 +47,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
         <div className="flex flex-col items-center space-y-4">
           <div className="loading-spinner">
             <svg 
-              className="animate-spin h-8 w-8 text-gray-600" 
+              className="h-8 w-8 animate-spin text-gray-600" 
               xmlns="http://www.w3.org/2000/svg" 
               fill="none" 
               viewBox="0 0 24 24"

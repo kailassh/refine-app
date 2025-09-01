@@ -27,14 +27,14 @@ export const useSupabaseAuth = () => {
    */
   const sendOTPToEmail = useCallback(async (email: string): Promise<{ success: boolean; error?: string }> => {
     try {
-      // For now, we'll simulate the OTP sending since direct MCP access from hooks is complex
-      // In a real implementation, this would use the actual Supabase signInWithOtp function
+      const result = await SupabaseAuthService.sendOTPToEmail(email);
 
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      // Simulate successful OTP sending
-      console.log(`Simulating OTP send to: ${email}`);
+      if (result.error) {
+        return {
+          success: false,
+          error: result.error.message
+        };
+      }
 
       return { success: true };
     } catch (error) {
@@ -57,39 +57,30 @@ export const useSupabaseAuth = () => {
     token: string
   ): Promise<{ success: boolean; user?: User; session?: SupabaseSession; error?: string }> => {
     try {
-      // For now, we'll simulate the OTP verification
-      // In a real implementation, this would use the actual Supabase verifyOtp function
+      const result = await SupabaseAuthService.verifyOTPCode(email, token);
 
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      if (result.error) {
+        return {
+          success: false,
+          error: result.error.message
+        };
+      }
 
-      // Simulate successful verification
-      console.log(`Simulating OTP verification for: ${email} with code: ${token}`);
-
-      // Create mock session data
-      const mockSession: SupabaseSession = {
-        access_token: `mock-token-${Date.now()}`,
-        token_type: 'bearer',
-        expires_in: 3600,
-        refresh_token: `mock-refresh-${Date.now()}`,
-        user: {
-          id: `user-${Date.now()}`,
-          email: email,
-          email_confirmed_at: new Date().toISOString(),
-          created_at: new Date().toISOString(),
-          last_sign_in_at: new Date().toISOString(),
-          user_metadata: {} as Record<string, unknown>,
-          app_metadata: {} as Record<string, unknown>
-        }
-      };
+      if (!result.data?.user) {
+        return {
+          success: false,
+          error: 'No user data received from verification'
+        };
+      }
 
       // Transform to our User type
-      const userData = SupabaseAuthService.transformSupabaseUser(mockSession.user);
+      const userData = SupabaseAuthService.transformSupabaseUser(result.data.user);
 
-      // Store session for persistence
-      SupabaseAuthService.storeSession(mockSession);
-
-      return { success: true, user: userData, session: mockSession };
+      return {
+        success: true,
+        user: userData,
+        session: result.data.session || undefined
+      };
     } catch (error) {
       return {
         success: false,
@@ -105,13 +96,14 @@ export const useSupabaseAuth = () => {
    */
   const signOut = useCallback(async (): Promise<{ success: boolean; error?: string }> => {
     try {
-      // For now, we'll simulate the sign out
-      // In a real implementation, this would use the actual Supabase signOut function
+      const result = await SupabaseAuthService.signOut();
 
-      // Clear stored session
-      SupabaseAuthService.clearStoredSession();
-
-      console.log('Simulating user sign out');
+      if (result.error) {
+        return {
+          success: false,
+          error: result.error.message
+        };
+      }
 
       return { success: true };
     } catch (error) {

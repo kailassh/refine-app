@@ -27,3 +27,6 @@ dist-ssr
 .claude/*
 .mcp.json
 CLAUDE.md
+
+# Environment Variables
+.env

@@ -152,6 +152,22 @@ export interface SupabaseAuthError {
 }
 
 /**
+ * Common authentication error codes used in the application.
+ */
+export type AuthErrorCode = 
+  | 'SEND_OTP_ERROR'
+  | 'RATE_LIMIT_ERROR'
+  | 'VERIFY_OTP_ERROR'
+  | 'TOKEN_EXPIRED'
+  | 'INVALID_TOKEN'
+  | 'SIGN_OUT_ERROR'
+  | 'USER_CREATION_ERROR'
+  | 'USER_NOT_FOUND'
+  | 'EMAIL_NOT_CONFIRMED'
+  | 'INVALID_CREDENTIALS'
+  | 'SIGNUPS_DISABLED';
+
+/**
  * Supabase user object from authentication responses.
  * 
  * Represents the user object returned by Supabase auth operations.

@@ -39,7 +39,7 @@ interface LogoProps {
  */
 export const Logo: React.FC<LogoProps> = ({ className = '' }) => {
   return (
-    <div className={`font-medium text-gray-900 text-xl ${className}`}>
+    <div className={`text-xl font-medium text-gray-900 ${className}`}>
       {/* Main brand text */}
       <span>refine</span>
       {/* Brand accent - subtle dot */}

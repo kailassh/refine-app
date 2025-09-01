@@ -116,13 +116,48 @@ export const OTPVerification: React.FC<OTPVerificationProps> = ({
   };
 
   /**
+   * Handles paste events for OTP input.
+   * 
+   * @param e - Clipboard paste event
+   */
+  const handleOTPPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    
+    // Get pasted text from clipboard
+    const pastedText = e.clipboardData.getData('text');
+    
+    // Extract only digits from pasted content and limit to 6 characters
+    const otpFromPaste = pastedText.replace(/\D/g, '').slice(0, 6);
+    
+    if (otpFromPaste) {
+      setFormData({ otp: otpFromPaste });
+      
+      // Validate the pasted OTP if user has interacted
+      if (hasInteracted || otpFromPaste.length === 6) {
+        const otpError = validateOTP(otpFromPaste);
+        setValidationErrors({ otp: otpError });
+      }
+      
+      // Mark as interacted since user pasted content
+      if (!hasInteracted) {
+        setHasInteracted(true);
+      }
+    }
+  };
+
+  /**
    * Handles key press events for better UX.
    * 
    * @param e - Keyboard event
    */
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
-    // Only allow numbers
-    if (!/[0-9]/.test(e.key) && !['Backspace', 'Delete', 'Tab', 'Enter'].includes(e.key)) {
+    // Allow paste operations (Ctrl+V or Cmd+V)
+    if ((e.ctrlKey || e.metaKey) && e.key === 'v') {
+      return; // Allow paste
+    }
+    
+    // Only allow numbers and navigation keys
+    if (!/[0-9]/.test(e.key) && !['Backspace', 'Delete', 'Tab', 'Enter', 'ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) {
       e.preventDefault();
     }
   };
@@ -220,18 +255,24 @@ export const OTPVerification: React.FC<OTPVerificationProps> = ({
               value={formData.otp}
               onChange={handleOTPChange}
               onKeyDown={handleKeyPress}
+              onPaste={handleOTPPaste}
               disabled={isLoading}
               className={`
                 w-full max-w-48 mx-auto
                 px-6 py-4
-                text-2xl font-mono text-center tracking-widest border rounded-lg
+                text-2xl font-mono text-center tracking-widest
+                border rounded-lg
                 ${validationErrors.otp 
-                  ? 'border-red-300 focus:ring-red-500' 
-                  : 'border-gray-300 focus:ring-gray-500'
+                  ? 'border-red-300' 
+                  : 'border-gray-300'
                 }
-                focus:outline-none focus:ring-2 focus:border-transparent
-                disabled:bg-gray-50 disabled:cursor-not-allowed
                 transition-colors duration-200
+                focus:outline-none focus:ring-2 focus:border-transparent
+                ${validationErrors.otp 
+                  ? 'focus:ring-red-500' 
+                  : 'focus:ring-gray-500'
+                }
+                disabled:bg-gray-50 disabled:cursor-not-allowed
               `}
               aria-label="6-digit verification code"
               autoComplete="one-time-code"
@@ -276,14 +317,19 @@ export const OTPVerification: React.FC<OTPVerificationProps> = ({
             onClick={handleResendClick}
             disabled={!timerState.canResend || isLoading}
             className={`
+              px-2 py-1
               text-sm font-medium
+              rounded
               ${timerState.canResend && !isLoading
-                ? 'text-gray-900 hover:text-gray-700 cursor-pointer'
+                ? 'text-gray-900 cursor-pointer'
                 : 'text-gray-400 cursor-not-allowed'
               }
               transition-colors duration-200
+              ${timerState.canResend && !isLoading
+                ? 'hover:text-gray-700'
+                : ''
+              }
               focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2
-              rounded px-2 py-1
             `}
             aria-label={timerState.canResend ? 'Resend verification code' : 'Resend not available'}
           >
@@ -300,7 +346,7 @@ export const OTPVerification: React.FC<OTPVerificationProps> = ({
             type="button"
             onClick={handleGoBackClick}
             disabled={isLoading}
-            className="text-sm text-gray-500 hover:text-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 rounded px-2 py-1"
+            className="px-2 py-1 text-sm rounded text-gray-500 transition-colors duration-200 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
             aria-label="Go back to email input"
           >
             ← Use a different email

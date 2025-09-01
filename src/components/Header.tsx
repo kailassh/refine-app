@@ -89,8 +89,8 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className={`w-full bg-white border-b border-gray-200 ${className}`}>
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <header className={`w-full border-b bg-white border-gray-200 ${className}`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Left side - Logo */}
           <div className="flex items-center">
@@ -105,20 +105,20 @@ export const Header: React.FC<HeaderProps> = ({
                 <button
                   onClick={toggleDropdown}
                   onKeyDown={handleKeyDown}
-                  className="flex items-center space-x-3 px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                  className="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 transition-colors duration-200 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
                   aria-expanded={isDropdownOpen}
                   aria-haspopup="true"
                   aria-label="User menu"
                 >
                   {/* User avatar placeholder */}
-                  <div className="flex items-center justify-center w-8 h-8 bg-gray-300 rounded-full">
+                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-300">
                     <span className="text-sm font-medium text-gray-700">
                       {user.email.charAt(0).toUpperCase()}
                     </span>
                   </div>
                   
                   {/* User email */}
-                  <span className="hidden sm:block truncate max-w-40">
+                  <span className="hidden sm:block max-w-40 truncate">
                     {user.email}
                   </span>
                   
@@ -142,7 +142,7 @@ export const Header: React.FC<HeaderProps> = ({
 
                 {/* Dropdown menu */}
                 {isDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-10">
+                  <div className="absolute right-0 w-56 mt-2 py-1 bg-white border rounded-lg border-gray-200 shadow-lg z-10">
                     {/* User info section */}
                     <div className="px-4 py-3 border-b border-gray-100">
                       <p className="text-sm font-medium text-gray-900 truncate">
@@ -158,14 +158,14 @@ export const Header: React.FC<HeaderProps> = ({
                       <button
                         onClick={handleSignOutClick}
                         disabled={isSigningOut}
-                        className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 transition-colors duration-200"
+                        className="flex items-center w-full space-x-2 px-4 py-2 text-left text-sm text-gray-700 transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
                         role="menuitem"
                       >
                         {isSigningOut ? (
                           <>
                             <div className="w-4 h-4">
                               <svg 
-                                className="animate-spin h-4 w-4 text-gray-400" 
+                                className="h-4 w-4 animate-spin text-gray-400" 
                                 xmlns="http://www.w3.org/2000/svg" 
                                 fill="none" 
                                 viewBox="0 0 24 24"
