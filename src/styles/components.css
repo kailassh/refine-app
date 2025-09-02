@@ -174,3 +174,202 @@
 .loading-spinner-path {
   @apply opacity-75;
 }
+
+/* ===========================================
+   CHAT INTERFACE COMPONENTS
+   =========================================== */
+
+.chat-container {
+  @apply flex h-screen bg-gray-50;
+}
+
+.chat-sidebar {
+  @apply flex-shrink-0 h-full bg-white border-r border-gray-200;
+}
+
+.chat-main {
+  @apply flex-1 flex flex-col min-w-0;
+}
+
+.chat-header {
+  @apply flex items-center justify-between 
+         px-4 py-3 border-b bg-white border-gray-200;
+}
+
+.chat-messages {
+  @apply flex-1 overflow-y-auto;
+}
+
+.chat-input-container {
+  @apply border-t bg-white border-gray-200;
+}
+
+/* Message bubble utilities */
+.message-bubble-user {
+  @apply max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl
+         px-4 py-3 rounded-lg rounded-br-sm
+         bg-gray-900 text-white;
+}
+
+.message-bubble-assistant {
+  @apply max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl
+         px-4 py-3 rounded-lg rounded-bl-sm
+         bg-gray-100 text-gray-900 border border-gray-200;
+}
+
+/* Chat sidebar utilities */
+.sidebar-overlay {
+  @apply fixed inset-0 bg-black/50 z-40;
+}
+
+.sidebar-mobile {
+  @apply fixed top-0 left-0 h-full z-50 shadow-xl
+         transform transition-transform duration-300 ease-in-out;
+}
+
+.sidebar-desktop {
+  @apply relative h-full shadow-sm
+         transform transition-transform duration-300 ease-in-out;
+}
+
+.chat-list-item {
+  @apply relative flex items-center w-full p-3 rounded-lg text-left 
+         transition-colors duration-200 cursor-pointer;
+}
+
+.chat-list-item:hover .chat-delete-btn {
+  @apply opacity-100;
+}
+
+.chat-list-item-selected {
+  @apply bg-gray-900 text-white;
+}
+
+.chat-list-item-default {
+  @apply text-gray-700 hover:bg-gray-100;
+}
+
+/* Chat input utilities */
+.chat-textarea {
+  @apply w-full resize-none
+         px-4 py-3
+         text-base border rounded-lg border-gray-300
+         transition-colors duration-200
+         hover:border-gray-400
+         focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent
+         disabled:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50;
+}
+
+.chat-send-button {
+  @apply flex items-center justify-center
+         w-12 h-12 rounded-lg
+         transition-all duration-200
+         focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2;
+}
+
+.chat-send-button-active {
+  @apply bg-gray-900 text-white shadow-sm
+         hover:bg-gray-800;
+}
+
+.chat-send-button-disabled {
+  @apply bg-gray-100 text-gray-400 cursor-not-allowed;
+}
+
+/* Responsive utilities for chat */
+.chat-responsive-padding {
+  @apply px-4 sm:px-6 lg:px-8;
+}
+
+.chat-responsive-max-width {
+  @apply max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl;
+}
+
+/* Layout utilities for sidebar state */
+.chat-main-expanded {
+  @apply w-full transition-all duration-500 ease-in-out will-change-transform;
+}
+
+.chat-main-with-sidebar {
+  @apply flex-1 transition-all duration-500 ease-in-out will-change-transform;
+}
+
+/* Animation utilities */
+.slide-in-left {
+  @apply transform transition-transform duration-300 ease-in-out translate-x-0;
+}
+
+.slide-out-left {
+  @apply transform transition-transform duration-300 ease-in-out -translate-x-full;
+}
+
+.fade-in {
+  @apply opacity-100 transition-opacity duration-200 ease-in-out;
+}
+
+.fade-out {
+  @apply opacity-0 transition-opacity duration-200 ease-in-out;
+}
+
+/* Enhanced sidebar animations */
+.sidebar-content-enter {
+  @apply opacity-0 translate-y-2 transition-all duration-300 ease-out;
+}
+
+.sidebar-content-enter-active {
+  @apply opacity-100 translate-y-0;
+}
+
+.sidebar-item-hover {
+  @apply transition-all duration-200 ease-out transform hover:scale-105 hover:shadow-md;
+}
+
+.smooth-width-transition {
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
+              transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: width, transform;
+}
+
+.bounce-in {
+  animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) both;
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(8px);
+  }
+  50% {
+    transform: scale(1.02) translateY(-2px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+/* Sidebar item enhanced animations */
+.sidebar-item-enhanced {
+  @apply transition-all duration-300 ease-out;
+  transform-origin: left center;
+}
+
+.sidebar-item-enhanced:hover {
+  @apply shadow-lg;
+  transform: translateX(2px) scale(1.02);
+}

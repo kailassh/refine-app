@@ -1,10 +1,10 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { LoginPage } from './components/LoginPage';
-import { OTPVerification } from './components/OTPVerification';
-import { HomePage } from './components/HomePage';
-import { AuthLayout } from './components/AuthLayout';
-import { ProtectedRoute } from './components/ProtectedRoute';
-import { useAuth } from './hooks/useAuth';
+import { LoginPage, OTPVerification } from './components/features/auth';
+import { HomePage } from './components/features/chat';
+import { AuthLayout, ProtectedRoute } from './components/layout';
+import { useAuth } from './hooks/auth';
+import { AppProviders } from './contexts';
+import { ErrorBoundary } from './components/shared';
 
 /**
  * Main application component that handles routing and authentication flow.
@@ -36,7 +36,9 @@ function App() {
   } = useAuth();
 
   return (
-    <Router>
+    <AppProviders>
+      <ErrorBoundary>
+        <Router>
       <Routes>
         {/* Authentication Routes */}
         <Route 
@@ -103,8 +105,10 @@ function App() {
             />
           } 
         />
-      </Routes>
-    </Router>
+        </Routes>
+      </Router>
+    </ErrorBoundary>
+  </AppProviders>
   );
 }
 
