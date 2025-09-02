@@ -1,21 +1,19 @@
 /**
- * HomePage component - Chat interface for authenticated users.
+ * HomePage component - Full-width chat interface for authenticated users.
  * 
  * This component serves as the main chat interface for authenticated users
- * after successful login. It includes a responsive sidebar with chat history,
- * main chat area with message display, and input functionality. The component
- * implements a Claude-like chat experience with proper state management.
+ * after successful login. It provides a clean, full-width chat experience
+ * without sidebar distractions. The component implements a streamlined
+ * chat experience with proper state management.
  * 
  * @fileoverview Main chat interface component for authenticated users
  */
 
 import React, { useState } from 'react';
+import { Box } from '@mui/material';
 import { Header } from '../../../layout/Header';
-import { ChatSidebar } from '../ChatSidebar';
 import { ChatArea } from '../ChatArea';
-import { AnimatedHamburger } from '../../../ui';
 import { useChat } from '../../../../hooks/chat';
-import { useSidebar } from '../../../../hooks/ui';
 import { type User } from '../../../../types/auth';
 
 /**
@@ -33,11 +31,10 @@ interface HomePageProps {
 }
 
 /**
- * HomePage functional component with chat interface.
+ * HomePage functional component with full-width chat interface.
  * 
- * Renders the main chat interface including responsive sidebar with chat history,
- * main chat area for message display, and proper state management for chat
- * functionality. Implements Claude-like UX patterns with mobile-first responsive design.
+ * Renders the main chat interface with header and full-width chat area.
+ * Implements clean, distraction-free chat experience with proper state management.
  * 
  * @param props - Component props including user data and callbacks
  * @returns JSX element representing the chat interface
@@ -52,19 +49,8 @@ export const HomePage: React.FC<HomePageProps> = ({
   const {
     chatState,
     isLoading,
-    createNewChat,
-    selectChat,
-    deleteChat,
     sendMessage,
-    clearError
   } = useChat();
-
-  // Sidebar state management
-  const { 
-    isVisible: isSidebarVisible,
-    isMobile,
-    toggleSidebar
-  } = useSidebar();
 
   // Local UI state
   const [error, setError] = useState<string | null>(null);
@@ -79,28 +65,6 @@ export const HomePage: React.FC<HomePageProps> = ({
     }
   };
 
-  // Handle chat selection
-  const handleSelectChat = (chatId: string) => {
-    selectChat(chatId);
-    clearError();
-  };
-
-  // Handle chat deletion with error handling
-  const handleDeleteChat = (chatId: string) => {
-    try {
-      deleteChat(chatId);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to delete chat';
-      setError(errorMessage);
-    }
-  };
-
-  // Handle new chat creation
-  const handleNewChat = () => {
-    createNewChat();
-    clearError();
-  };
-
   // Clear any local errors when chat state error changes
   React.useEffect(() => {
     if (chatState.error) {
@@ -109,7 +73,15 @@ export const HomePage: React.FC<HomePageProps> = ({
   }, [chatState.error]);
 
   return (
-    <div className={`flex flex-col h-screen bg-gray-50 ${className}`}>
+    <Box 
+      className={className}
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100vh',
+        bgcolor: 'background.default'
+      }}
+    >
       {/* Header Navigation */}
       <Header 
         user={user}
@@ -117,46 +89,16 @@ export const HomePage: React.FC<HomePageProps> = ({
         isSigningOut={isSigningOut}
       />
 
-      {/* Main Chat Interface */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Hamburger menu button */}
-        <button
-          onClick={toggleSidebar}
-          className="fixed top-4 left-4 z-30 p-2 bg-white border border-gray-200 rounded-lg shadow-lg transition-all duration-200 hover:bg-gray-50 hover:shadow-xl"
-          aria-label={isSidebarVisible ? "Close chat history" : "Open chat history"}
-          title={isSidebarVisible ? "Close chat history" : "Open chat history"}
-        >
-          <AnimatedHamburger 
-            isOpen={isSidebarVisible} 
-            className="text-gray-600" 
-            size="md" 
-          />
-        </button>
-
-        {/* Chat Sidebar */}
-        <ChatSidebar
-          user={user}
-          chats={chatState.chats}
-          currentChatId={chatState.currentChat?.id}
-          isLoading={isLoading && !chatState.currentChat}
-          onNewChat={handleNewChat}
-          onSelectChat={handleSelectChat}
-          onDeleteChat={handleDeleteChat}
+      {/* Full-Width Chat Interface */}
+      <Box sx={{ flexGrow: 1, overflow: 'hidden' }}>
+        <ChatArea
+          currentChat={chatState.currentChat}
+          isLoading={isLoading}
+          onSendMessage={handleSendMessage}
+          error={error || chatState.error}
         />
-
-        {/* Main Chat Area */}
-        <div className={`flex flex-col min-w-0 ${
-          isSidebarVisible && !isMobile ? 'flex-1' : 'w-full'
-        }`}>
-          <ChatArea
-            currentChat={chatState.currentChat}
-            isLoading={isLoading}
-            onSendMessage={handleSendMessage}
-            error={error || chatState.error}
-          />
-        </div>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

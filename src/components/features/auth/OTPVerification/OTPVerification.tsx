@@ -6,12 +6,19 @@
  * comprehensive error handling. It follows accessibility best practices
  * and includes proper validation and user feedback.
  * 
- * @fileoverview OTP verification component with timer and validation
+ * @fileoverview OTP verification component with timer and validation using MUI
  */
 
 import React, { useState, useRef, useEffect, type FormEvent, type KeyboardEvent } from 'react';
 import { Timer } from '../../../shared/Timer';
-import { Button } from '../../../ui/Button';
+import { 
+  Button, 
+  TextField, 
+  Stack, 
+  CircularProgress,
+  Box,
+  Typography
+} from '@mui/material';
 import { type OTPFormData, type ValidationErrors, type OTPTimerState } from '../../../../types/auth';
 
 /**
@@ -211,149 +218,182 @@ export const OTPVerification: React.FC<OTPVerificationProps> = ({
   };
 
   return (
-    <div className="w-full max-w-md space-y-8">
+    <Box sx={{ width: '100%', maxWidth: 448, mx: 'auto' }}>
       {/* Header Section */}
-      <div className="space-y-text text-center">
-        <h1 className="heading-primary">
+      <Stack spacing={6} sx={{ textAlign: 'center', mb: 4 }}>
+        <Typography 
+          variant="h3" 
+          sx={{ 
+            fontWeight: 500,
+            color: 'text.primary'
+          }}
+        >
           Check your email
-        </h1>
-        <div className="space-y-2">
-          <p className="text-description">
+        </Typography>
+        <Stack spacing={1}>
+          <Typography 
+            variant="h6"
+            sx={{ color: 'text.secondary' }}
+          >
             We sent a 6-digit code to
-          </p>
-          <p className="text-base font-medium text-gray-900">
+          </Typography>
+          <Typography 
+            variant="body1"
+            sx={{ 
+              fontWeight: 500,
+              color: 'text.primary'
+            }}
+          >
             {email}
-          </p>
-        </div>
-      </div>
+          </Typography>
+        </Stack>
+      </Stack>
 
       {/* Timer Section */}
-      <div className="flex justify-center">
+      <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
         <Timer 
           timeRemaining={timerState.timeRemaining}
           isActive={timerState.isActive}
           totalDuration={120}
         />
-      </div>
+      </Box>
 
       {/* OTP Form Section */}
-      <div className="space-y-form">
-        <form onSubmit={handleOTPSubmit} className="space-y-form">
-          {/* OTP Input Field */}
-          <div className="text-center">
-            <label htmlFor="otp" className="input-label sr-only">
+      <Stack spacing={2} sx={{ mb: 4 }}>
+        <form onSubmit={handleOTPSubmit}>
+          <Stack spacing={2}>
+            {/* OTP Input Field */}
+            <Box sx={{ textAlign: 'center' }}>
+            <label htmlFor="otp" className="sr-only">
               6-digit verification code
             </label>
-            <input
-              ref={otpInputRef}
+            <TextField
+              inputRef={otpInputRef}
               id="otp"
               type="text"
               inputMode="numeric"
-              pattern="[0-9]*"
-              maxLength={6}
+              inputProps={{
+                pattern: "[0-9]*",
+                maxLength: 6,
+                style: {
+                  textAlign: 'center',
+                  fontSize: '1.5rem',
+                  fontFamily: 'monospace',
+                  letterSpacing: '0.5em',
+                  paddingLeft: '0.25em'
+                }
+              }}
               placeholder="000000"
               value={formData.otp}
               onChange={handleOTPChange}
               onKeyDown={handleKeyPress}
               onPaste={handleOTPPaste}
               disabled={isLoading}
-              className={`
-                w-full max-w-48 mx-auto
-                px-6 py-4
-                text-2xl font-mono text-center tracking-widest
-                border rounded-lg
-                ${validationErrors.otp 
-                  ? 'border-red-300' 
-                  : 'border-gray-300'
-                }
-                transition-colors duration-200
-                focus:outline-none focus:ring-2 focus:border-transparent
-                ${validationErrors.otp 
-                  ? 'focus:ring-red-500' 
-                  : 'focus:ring-gray-500'
-                }
-                disabled:bg-gray-50 disabled:cursor-not-allowed
-              `}
+              error={!!validationErrors.otp}
+              helperText={validationErrors.otp}
+              sx={{
+                width: '100%',
+                maxWidth: 240,
+                mx: 'auto',
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 2,
+                  '&.Mui-error fieldset': {
+                    borderColor: 'error.main',
+                  },
+                },
+              }}
               aria-label="6-digit verification code"
               autoComplete="one-time-code"
               autoFocus
             />
-            {/* Field Error Message */}
-            {validationErrors.otp && (
-              <p className="input-error-message text-center mt-2" role="alert">
-                {validationErrors.otp}
-              </p>
-            )}
-          </div>
+            </Box>
 
-          {/* Submit Button */}
-          <Button
-            type="submit"
-            variant="primary"
-            isLoading={isLoading}
-            disabled={isLoading || !!validationErrors.otp || formData.otp.length !== 6}
-            className="w-full"
-          >
-            {isLoading ? 'Verifying...' : 'Verify code'}
-          </Button>
+            {/* Submit Button */}
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={isLoading || !!validationErrors.otp || formData.otp.length !== 6}
+              fullWidth
+              size="large"
+              sx={{ py: 1.5, fontWeight: 500, mt: 2 }}
+            >
+              {isLoading ? (
+                <Stack direction="row" alignItems="center" spacing={1}>
+                  <CircularProgress size={16} sx={{ color: 'inherit' }} />
+                  <span>Verifying...</span>
+                </Stack>
+              ) : (
+                'Verify code'
+              )}
+            </Button>
+          </Stack>
         </form>
-      </div>
+      </Stack>
 
       {/* Error Message Display */}
       {error && (
-        <div className="text-center">
-          <p className="input-error-message" role="alert">
+        <Box sx={{ textAlign: 'center', mb: 2 }}>
+          <Typography 
+            variant="body2" 
+            sx={{ color: 'error.main' }}
+            role="alert"
+          >
             {error}
-          </p>
-        </div>
+          </Typography>
+        </Box>
       )}
 
       {/* Action Buttons Section */}
-      <div className="space-y-form">
+      <Stack spacing={2}>
         {/* Resend Button */}
-        <div className="text-center">
-          <button
-            type="button"
+        <Box sx={{ textAlign: 'center' }}>
+          <Button
+            variant="text"
             onClick={handleResendClick}
             disabled={!timerState.canResend || isLoading}
-            className={`
-              px-2 py-1
-              text-sm font-medium
-              rounded
-              ${timerState.canResend && !isLoading
-                ? 'text-gray-900 cursor-pointer'
-                : 'text-gray-400 cursor-not-allowed'
+            sx={{
+              px: 1,
+              py: 0.5,
+              fontSize: '0.875rem',
+              fontWeight: 500,
+              color: timerState.canResend && !isLoading ? 'text.primary' : 'text.disabled',
+              '&:hover': {
+                backgroundColor: 'transparent',
+                color: timerState.canResend && !isLoading ? 'text.secondary' : 'text.disabled'
               }
-              transition-colors duration-200
-              ${timerState.canResend && !isLoading
-                ? 'hover:text-gray-700'
-                : ''
-              }
-              focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2
-            `}
+            }}
             aria-label={timerState.canResend ? 'Resend verification code' : 'Resend not available'}
           >
             {timerState.canResend 
               ? "Didn't receive the code? Resend"
               : `Resend in ${Math.floor(timerState.timeRemaining / 60)}:${(timerState.timeRemaining % 60).toString().padStart(2, '0')}`
             }
-          </button>
-        </div>
+          </Button>
+        </Box>
 
         {/* Go Back Button */}
-        <div className="text-center">
-          <button
-            type="button"
+        <Box sx={{ textAlign: 'center' }}>
+          <Button
+            variant="text"
             onClick={handleGoBackClick}
             disabled={isLoading}
-            className="px-2 py-1 text-sm rounded text-gray-500 transition-colors duration-200 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+            sx={{
+              px: 1,
+              py: 0.5,
+              fontSize: '0.875rem',
+              color: 'text.secondary',
+              '&:hover': {
+                backgroundColor: 'transparent',
+                color: 'text.primary'
+              }
+            }}
             aria-label="Go back to email input"
           >
             ← Use a different email
-          </button>
-        </div>
-      </div>
-    </div>
+          </Button>
+        </Box>
+      </Stack>
+    </Box>
   );
 };
 

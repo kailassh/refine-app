@@ -1,14 +1,14 @@
 /**
- * AuthLayout component - Layout wrapper for authentication pages.
+ * AuthLayout component - Layout wrapper for authentication pages using Material-UI.
  * 
- * This component provides consistent layout and styling for all
- * authentication-related pages (login, OTP verification). It includes
- * the header with logo, main content area, and footer with legal links.
+ * This component provides consistent layout and styling using MUI components
+ * for all authentication-related pages with modern design patterns.
  * 
- * @fileoverview Layout component for authentication pages
+ * @fileoverview Layout component for authentication pages with MUI
  */
 
 import React from 'react';
+import { Box, Container, Stack, Typography, Link } from '@mui/material';
 import { Logo } from '../../shared/Logo';
 
 /**
@@ -17,65 +17,124 @@ import { Logo } from '../../shared/Logo';
 interface AuthLayoutProps {
   /** Children components to render in the main content area */
   children: React.ReactNode;
-  /** Optional additional CSS classes */
-  className?: string;
+  /** Custom styling */
+  sx?: object;
 }
 
 /**
- * AuthLayout functional component.
+ * AuthLayout functional component using Material-UI components.
  * 
- * Provides the standard layout structure for authentication pages including
- * header with logo, centered main content area, and footer with legal links.
- * Ensures consistent styling and responsive design across all auth flows.
+ * Provides the standard layout structure for authentication pages with
+ * consistent modern styling and responsive design using MUI's sx prop approach.
  * 
  * @param props - Component props including children and styling
  * @returns JSX element representing the authentication page layout
  */
 export const AuthLayout: React.FC<AuthLayoutProps> = ({
   children,
-  className = ''
+  sx = {}
 }) => {
   return (
-    <div className={`page-container ${className}`}>
+    <Box 
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        bgcolor: 'background.default',
+        ...sx
+      }}
+    >
       {/* Header Section - Contains the application logo */}
-      <header className="header-section">
+      <Box 
+        component="header" 
+        sx={{ 
+          px: { xs: 3, sm: 4 }, 
+          py: { xs: 3, sm: 4 } 
+        }}
+      >
         <Logo />
-      </header>
+      </Box>
 
       {/* Main Content Section - Contains the authentication forms */}
-      <main className="content-center">
-        <div className="form-section">
-          {children}
-        </div>
-      </main>
+      <Box 
+        component="main" 
+        sx={{
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          px: 2,
+          py: { xs: 6, sm: 12 }
+        }}
+      >
+        <Container maxWidth="xs">
+          <Stack spacing={4} sx={{ width: '100%' }}>
+            {children}
+          </Stack>
+        </Container>
+      </Box>
 
       {/* Footer Section - Legal links and branding */}
-      <footer className="footer-section">
-        <div className="mx-auto max-w-md">
-          <div className="space-y-form text-center">
+      <Box 
+        component="footer" 
+        sx={{ 
+          px: { xs: 3, sm: 4 }, 
+          py: { xs: 4, sm: 5 } 
+        }}
+      >
+        <Container maxWidth="xs">
+          <Stack spacing={2} sx={{ textAlign: 'center' }}>
             {/* Terms and Privacy Links */}
-            <p className="text-small">
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               By continuing, you agree to our{' '}
-              <a href="/terms" className="text-link" tabIndex={0}>
+              <Link 
+                href="/terms" 
+                sx={{ 
+                  color: 'text.secondary',
+                  textDecoration: 'underline',
+                  '&:hover': { color: 'text.primary' },
+                  '&:focus-visible': {
+                    outline: '2px solid',
+                    outlineColor: 'primary.main',
+                    outlineOffset: '2px',
+                    borderRadius: '2px'
+                  }
+                }}
+              >
                 Terms of Use
-              </a>{' '}
+              </Link>{' '}
               and{' '}
-              <a href="/privacy" className="text-link" tabIndex={0}>
+              <Link 
+                href="/privacy" 
+                sx={{ 
+                  color: 'text.secondary',
+                  textDecoration: 'underline',
+                  '&:hover': { color: 'text.primary' },
+                  '&:focus-visible': {
+                    outline: '2px solid',
+                    outlineColor: 'primary.main',
+                    outlineOffset: '2px',
+                    borderRadius: '2px'
+                  }
+                }}
+              >
                 Privacy policy
-              </a>
-            </p>
+              </Link>
+            </Typography>
             
             {/* Branding Section */}
-            <div className="flex items-center justify-center space-x-2 text-sm text-gray-400">
-              <span>curated by</span>
-              <div className="font-medium text-gray-900">
-                refine<span className="text-gray-400">.</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
+              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                curated by
+              </Typography>
+              <Typography variant="body2" sx={{ fontWeight: 500, color: 'text.primary' }}>
+                refine<Box component="span" sx={{ color: 'text.secondary' }}>.</Box>
+              </Typography>
+            </Box>
+          </Stack>
+        </Container>
+      </Box>
+    </Box>
   );
 };
 

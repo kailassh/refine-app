@@ -7,6 +7,8 @@
  */
 
 import React, { Component, type ReactNode } from 'react';
+import { Box, Typography, Button, Stack, Alert } from '@mui/material';
+import { ErrorOutline as ErrorOutlineIcon } from '@mui/icons-material';
 
 /**
  * Props interface for ErrorBoundary component.
@@ -85,61 +87,102 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
       // Default fallback UI
       return (
-        <div className="flex flex-col items-center justify-center min-h-96 p-8 text-center">
-          <div className="max-w-md mx-auto">
-            <div className="w-16 h-16 mx-auto mb-4 text-red-500">
-              <svg
-                className="w-full h-full"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
-                />
-              </svg>
-            </div>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: 384,
+            p: 4,
+            textAlign: 'center'
+          }}
+        >
+          <Box sx={{ maxWidth: 448, mx: 'auto' }}>
+            <ErrorOutlineIcon
+              sx={{
+                width: 64,
+                height: 64,
+                mx: 'auto',
+                mb: 2,
+                color: 'error.main'
+              }}
+            />
             
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            <Typography 
+              variant="h5" 
+              sx={{ 
+                fontWeight: 600, 
+                color: 'text.primary', 
+                mb: 1 
+              }}
+            >
               Something went wrong
-            </h2>
+            </Typography>
             
-            <p className="text-gray-600 mb-6">
+            <Typography 
+              variant="body1" 
+              sx={{ 
+                color: 'text.secondary', 
+                mb: 3 
+              }}
+            >
               We're sorry, but something unexpected happened. Please try again.
-            </p>
+            </Typography>
             
-            <div className="space-y-3">
-              <button
+            <Stack spacing={1.5}>
+              <Button
+                variant="contained"
                 onClick={this.resetError}
-                className="btn-primary"
+                fullWidth
               >
                 Try again
-              </button>
+              </Button>
               
-              <button
+              <Button
+                variant="outlined"
                 onClick={() => window.location.reload()}
-                className="btn-secondary w-full"
+                fullWidth
               >
                 Reload page
-              </button>
-            </div>
+              </Button>
+            </Stack>
             
             {process.env.NODE_ENV === 'development' && this.state.error && (
-              <details className="mt-6 text-left">
-                <summary className="cursor-pointer text-sm font-medium text-gray-500">
+              <Alert 
+                severity="error" 
+                sx={{ 
+                  mt: 3, 
+                  textAlign: 'left',
+                  '& .MuiAlert-message': {
+                    width: '100%'
+                  }
+                }}
+              >
+                <Typography variant="body2" sx={{ fontWeight: 500, mb: 1 }}>
                   Error details (development only)
-                </summary>
-                <pre className="mt-2 text-xs text-red-600 overflow-auto p-4 bg-red-50 rounded border">
+                </Typography>
+                <Box
+                  component="pre"
+                  sx={{
+                    fontSize: '0.75rem',
+                    color: 'error.dark',
+                    overflow: 'auto',
+                    p: 2,
+                    backgroundColor: 'error.light',
+                    borderRadius: 1,
+                    border: '1px solid',
+                    borderColor: 'error.main',
+                    fontFamily: 'monospace',
+                    whiteSpace: 'pre-wrap'
+                  }}
+                >
                   {this.state.error.toString()}
-                </pre>
-              </details>
+                </Box>
+              </Alert>
             )}
-          </div>
-        </div>
+          </Box>
+        </Box>
       );
     }
 

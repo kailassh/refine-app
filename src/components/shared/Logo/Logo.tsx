@@ -9,6 +9,7 @@
  */
 
 import React from 'react';
+import { Typography, Box } from '@mui/material';
 
 /**
  * Props interface for the Logo component.
@@ -39,12 +40,29 @@ interface LogoProps {
  */
 export const Logo: React.FC<LogoProps> = ({ className = '' }) => {
   return (
-    <div className={`text-xl font-medium text-gray-900 ${className}`}>
+    <Typography 
+      variant="h5"
+      className={className}
+      sx={{
+        fontWeight: 500,
+        color: 'text.primary',
+        display: 'inline-flex',
+        alignItems: 'baseline'
+      }}
+    >
       {/* Main brand text */}
-      <span>refine</span>
+      refine
       {/* Brand accent - subtle dot */}
-      <span className="text-gray-400">.</span>
-    </div>
+      <Box 
+        component="span" 
+        sx={{ 
+          color: 'text.secondary',
+          ml: 0.2
+        }}
+      >
+        .
+      </Box>
+    </Typography>
   );
 };
 

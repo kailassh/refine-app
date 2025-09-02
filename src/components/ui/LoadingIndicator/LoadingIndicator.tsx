@@ -1,115 +1,110 @@
 /**
- * Loading indicator components for chat interface.
+ * Loading indicator components using Material-UI components.
  * 
  * This file provides various loading indicators used throughout the chat
- * interface including typing indicators for AI responses and generic
- * loading spinners for various operations.
+ * interface including typing indicators and skeleton loaders with modern MUI styling.
  * 
- * @fileoverview Loading indicators for chat interface
+ * @fileoverview Loading indicators with MUI components
  */
 
 import React from 'react';
+import { Box, CircularProgress, Skeleton } from '@mui/material';
 
 /**
  * Props interface for LoadingIndicator components.
  */
 interface LoadingIndicatorProps {
-  /** Additional CSS classes */
-  className?: string;
   /** Size variant for the indicator */
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'small' | 'medium' | 'large';
+  /** Custom styling */
+  sx?: object;
 }
 
 /**
  * Typing indicator for AI responses - shows animated dots.
  * 
  * Displays three animated dots to indicate the AI is "thinking" or
- * generating a response. Uses CSS animations for smooth pulsing effect.
+ * generating a response. Uses MUI keyframe animations for smooth pulsing effect.
  */
 export const TypingIndicator: React.FC<LoadingIndicatorProps> = ({
-  className = '',
-  size = 'md'
+  size = 'medium',
+  sx = {}
 }) => {
-  const sizeClasses = {
-    sm: 'space-x-1',
-    md: 'space-x-2', 
-    lg: 'space-x-3'
+  const getDotSize = () => {
+    switch (size) {
+      case 'small': return 8;
+      case 'large': return 16;
+      default: return 12;
+    }
   };
 
-  const dotSizeClasses = {
-    sm: 'w-2 h-2',
-    md: 'w-3 h-3',
-    lg: 'w-4 h-4'
-  };
+  const dotSize = getDotSize();
+  const spacing = size === 'small' ? 1 : size === 'large' ? 3 : 2;
 
   return (
-    <div 
-      className={`flex items-center ${sizeClasses[size]} ${className}`}
+    <Box 
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: spacing,
+        ...sx
+      }}
       aria-label="AI is typing"
     >
-      <div 
-        className={`${dotSizeClasses[size]} bg-gray-400 rounded-full animate-pulse`}
-        style={{
-          animationDelay: '0ms',
-          animationDuration: '1.4s'
-        }}
-      />
-      <div 
-        className={`${dotSizeClasses[size]} bg-gray-400 rounded-full animate-pulse`}
-        style={{
-          animationDelay: '200ms',
-          animationDuration: '1.4s'
-        }}
-      />
-      <div 
-        className={`${dotSizeClasses[size]} bg-gray-400 rounded-full animate-pulse`}
-        style={{
-          animationDelay: '400ms',
-          animationDuration: '1.4s'
-        }}
-      />
-    </div>
+      {[0, 200, 400].map((delay, index) => (
+        <Box
+          key={index}
+          sx={{
+            width: dotSize,
+            height: dotSize,
+            borderRadius: '50%',
+            backgroundColor: 'text.secondary',
+            animation: 'pulse 1.4s ease-in-out infinite',
+            animationDelay: `${delay}ms`,
+            '@keyframes pulse': {
+              '0%, 80%, 100%': {
+                opacity: 0.3,
+                transform: 'scale(1)',
+              },
+              '40%': {
+                opacity: 1,
+                transform: 'scale(1.1)',
+              },
+            },
+          }}
+        />
+      ))}
+    </Box>
   );
 };
 
 /**
  * Generic spinning loader for general loading states.
  * 
- * A circular SVG spinner that rotates continuously. Used for
+ * A circular progress indicator that rotates continuously. Used for
  * operations like sending messages or loading chat history.
  */
 export const SpinningLoader: React.FC<LoadingIndicatorProps> = ({
-  className = '',
-  size = 'md'
+  size = 'medium',
+  sx = {}
 }) => {
-  const sizeClasses = {
-    sm: 'w-4 h-4',
-    md: 'w-6 h-6',
-    lg: 'w-8 h-8'
+  const getSize = () => {
+    switch (size) {
+      case 'small': return 20;
+      case 'large': return 40;
+      default: return 30;
+    }
   };
 
   return (
-    <svg
-      className={`${sizeClasses[size]} animate-spin text-gray-400 ${className}`}
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
+    <CircularProgress
+      size={getSize()}
+      sx={{
+        color: 'text.secondary',
+        ...sx
+      }}
       aria-label="Loading"
-    >
-      <circle
-        className="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="4"
-      />
-      <path
-        className="opacity-75"
-        fill="currentColor"
-        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-      />
-    </svg>
+    />
   );
 };
 
@@ -122,28 +117,36 @@ export const SpinningLoader: React.FC<LoadingIndicatorProps> = ({
 export const MessageSkeleton: React.FC<{
   /** Whether this is a user message (affects alignment) */
   isUser?: boolean;
-  /** Additional CSS classes */
-  className?: string;
+  /** Custom styling */
+  sx?: object;
 }> = ({ 
   isUser = false, 
-  className = '' 
+  sx = {}
 }) => {
   return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4 ${className}`}>
-      <div 
-        className={`
-          max-w-xs lg:max-w-md xl:max-w-lg
-          px-4 py-3 rounded-lg
-          bg-gray-200 animate-pulse
-          ${isUser ? 'rounded-br-sm' : 'rounded-bl-sm'}
-        `}
+    <Box 
+      sx={{
+        display: 'flex',
+        justifyContent: isUser ? 'flex-end' : 'flex-start',
+        mb: 2,
+        ...sx
+      }}
+    >
+      <Box 
+        sx={{
+          maxWidth: { xs: '75%', sm: '60%', md: '50%' },
+          p: 2,
+          borderRadius: 2,
+          borderBottomRightRadius: isUser ? 0.5 : 2,
+          borderBottomLeftRadius: isUser ? 2 : 0.5,
+        }}
       >
-        <div className="space-y-2">
-          <div className="h-4 bg-gray-300 rounded w-3/4 animate-pulse" />
-          <div className="h-4 bg-gray-300 rounded w-1/2 animate-pulse" />
-        </div>
-      </div>
-    </div>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+          <Skeleton variant="text" sx={{ width: '75%', height: 20 }} />
+          <Skeleton variant="text" sx={{ width: '50%', height: 20 }} />
+        </Box>
+      </Box>
+    </Box>
   );
 };
 
@@ -156,17 +159,36 @@ export const MessageSkeleton: React.FC<{
 export const ChatLoadingState: React.FC<{
   /** Loading message to display */
   message?: string;
-  /** Additional CSS classes */
-  className?: string;
+  /** Custom styling */
+  sx?: object;
 }> = ({ 
   message = "Loading chat...", 
-  className = '' 
+  sx = {}
 }) => {
   return (
-    <div className={`flex flex-col items-center justify-center h-64 space-y-4 ${className}`}>
-      <SpinningLoader size="lg" />
-      <p className="text-gray-500 text-sm">{message}</p>
-    </div>
+    <Box 
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 256,
+        gap: 2,
+        ...sx
+      }}
+    >
+      <SpinningLoader size="large" />
+      <Box 
+        component="p" 
+        sx={{ 
+          color: 'text.secondary', 
+          fontSize: '0.875rem',
+          margin: 0
+        }}
+      >
+        {message}
+      </Box>
+    </Box>
   );
 };
 
@@ -179,22 +201,22 @@ export const ChatLoadingState: React.FC<{
 export const ChatListSkeleton: React.FC<{
   /** Number of skeleton items to show */
   count?: number;
-  /** Additional CSS classes */
-  className?: string;
+  /** Custom styling */
+  sx?: object;
 }> = ({ 
   count = 3, 
-  className = '' 
+  sx = {}
 }) => {
   return (
-    <div className={`space-y-2 ${className}`}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, ...sx }}>
       {Array.from({ length: count }).map((_, index) => (
-        <div key={index} className="p-3 rounded-lg bg-gray-100 animate-pulse">
-          <div className="space-y-2">
-            <div className="h-4 bg-gray-300 rounded w-3/4" />
-            <div className="h-3 bg-gray-300 rounded w-1/2" />
-          </div>
-        </div>
+        <Box key={index} sx={{ p: 2, borderRadius: 2 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <Skeleton variant="text" sx={{ width: '75%', height: 20 }} />
+            <Skeleton variant="text" sx={{ width: '50%', height: 16 }} />
+          </Box>
+        </Box>
       ))}
-    </div>
+    </Box>
   );
 };

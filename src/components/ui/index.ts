@@ -4,8 +4,6 @@
  * This file re-exports all UI components for convenient importing.
  */
 
-export * from './AnimatedHamburger';
-export * from './Button';
-export * from './Input';
+// Custom components
 export * from './LoadingIndicator';
 export * from './MessageBubble';

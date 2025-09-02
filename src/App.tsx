@@ -5,6 +5,7 @@ import { AuthLayout, ProtectedRoute } from './components/layout';
 import { useAuth } from './hooks/auth';
 import { AppProviders } from './contexts';
 import { ErrorBoundary } from './components/shared';
+import { MuiThemeProvider } from './theme/index';
 
 /**
  * Main application component that handles routing and authentication flow.
@@ -36,10 +37,11 @@ function App() {
   } = useAuth();
 
   return (
-    <AppProviders>
-      <ErrorBoundary>
-        <Router>
-      <Routes>
+    <MuiThemeProvider>
+      <AppProviders>
+        <ErrorBoundary>
+          <Router>
+        <Routes>
         {/* Authentication Routes */}
         <Route 
           path="/login" 
@@ -109,6 +111,7 @@ function App() {
       </Router>
     </ErrorBoundary>
   </AppProviders>
+</MuiThemeProvider>
   );
 }
 

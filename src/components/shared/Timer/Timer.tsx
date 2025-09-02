@@ -9,6 +9,7 @@
  */
 
 import React from 'react';
+import { Box, Typography, LinearProgress } from '@mui/material';
 
 /**
  * Props interface for the Timer component.
@@ -56,19 +57,19 @@ export const Timer: React.FC<TimerProps> = ({
   const progressPercentage = Math.max(0, ((totalDuration - timeRemaining) / totalDuration) * 100);
   
   // Determine color based on remaining time
-  const getTimerColor = (): string => {
+  const getTimerColor = () => {
     const timePercent = (timeRemaining / totalDuration) * 100;
-    if (timePercent > 50) return 'text-green-600';
-    if (timePercent > 25) return 'text-yellow-600';
-    return 'text-red-600';
+    if (timePercent > 50) return 'success.main';
+    if (timePercent > 25) return 'warning.main';
+    return 'error.main';
   };
   
   // Determine progress bar color
-  const getProgressColor = (): string => {
+  const getProgressColor = () => {
     const timePercent = (timeRemaining / totalDuration) * 100;
-    if (timePercent > 50) return 'bg-green-500';
-    if (timePercent > 25) return 'bg-yellow-500';
-    return 'bg-red-500';
+    if (timePercent > 50) return 'success';
+    if (timePercent > 25) return 'warning';
+    return 'error';
   };
 
   if (!isActive) {
@@ -76,27 +77,51 @@ export const Timer: React.FC<TimerProps> = ({
   }
 
   return (
-    <div className={`flex flex-col items-center space-y-3 ${className}`}>
+    <Box 
+      className={className}
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: 3
+      }}
+    >
       {/* Time Display */}
-      <div className={`text-lg font-medium ${getTimerColor()}`}>
+      <Typography 
+        variant="h6"
+        sx={{
+          fontWeight: 500,
+          color: getTimerColor()
+        }}
+      >
         {formatTime(timeRemaining)}
-      </div>
+      </Typography>
       
       {/* Progress Bar */}
-      <div className="w-full max-w-xs">
-        <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-          <div 
-            className={`h-full transition-all duration-1000 ease-linear ${getProgressColor()}`}
-            style={{ width: `${progressPercentage}%` }}
-          />
-        </div>
-      </div>
+      <Box sx={{ width: '100%', maxWidth: 300 }}>
+        <LinearProgress
+          variant="determinate"
+          value={progressPercentage}
+          color={getProgressColor()}
+          sx={{
+            height: 8,
+            borderRadius: 1,
+            backgroundColor: 'grey.200',
+            '& .MuiLinearProgress-bar': {
+              transition: 'transform 1000ms ease-in-out'
+            }
+          }}
+        />
+      </Box>
       
       {/* Helper Text */}
-      <p className="text-sm text-gray-500">
+      <Typography 
+        variant="body2"
+        sx={{ color: 'text.secondary' }}
+      >
         Code expires in {formatTime(timeRemaining)}
-      </p>
-    </div>
+      </Typography>
+    </Box>
   );
 };
 

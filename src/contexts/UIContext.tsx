@@ -1,13 +1,11 @@
 /**
  * UI context provider for managing global UI state.
  * 
- * This context manages sidebar state, theme preferences, and other
- * global UI state throughout the app. It centralizes UI-related
- * state management and replaces individual UI hooks.
+ * This context manages theme preferences and other global UI state 
+ * throughout the app. Sidebar functionality has been removed.
  */
 
 import React, { createContext, useContext, type ReactNode } from 'react';
-import { useSidebar } from '../hooks/ui/useSidebar';
 
 /**
  * Theme options.
@@ -23,23 +21,11 @@ export type ModalType = 'settings' | 'profile' | 'help' | null;
  * UI context value interface.
  */
 interface UIContextValue {
-  // Sidebar state
-  isSidebarVisible: boolean;
-  isSidebarOverlay: boolean;
-  isMobile: boolean;
-  isTablet: boolean;
-  isDesktop: boolean;
-  
   // Theme state
   theme: Theme;
   
   // Modal state
   activeModal: ModalType;
-  
-  // Sidebar actions
-  toggleSidebar: () => void;
-  openSidebar: () => void;
-  closeSidebar: () => void;
   
   // Theme actions
   setTheme: (theme: Theme) => void;
@@ -65,17 +51,15 @@ interface UIProviderProps {
  * UI provider component.
  * 
  * Wraps the application to provide global UI state and methods.
- * Manages sidebar state, theme preferences, and modal state.
+ * Manages theme preferences and modal state.
  */
 export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
-  const sidebar = useSidebar();
   const [theme, setThemeState] = React.useState<Theme>('light');
   const [activeModal, setActiveModal] = React.useState<ModalType>(null);
   
   // Theme management
   const setTheme = React.useCallback((newTheme: Theme) => {
     setThemeState(newTheme);
-    // Could add localStorage persistence here
     localStorage.setItem('ui-theme', newTheme);
   }, []);
   
@@ -101,23 +85,11 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
   }, []);
   
   const contextValue: UIContextValue = {
-    // Sidebar state
-    isSidebarVisible: sidebar.isVisible,
-    isSidebarOverlay: sidebar.isOverlay,
-    isMobile: sidebar.isMobile,
-    isTablet: sidebar.isTablet,
-    isDesktop: sidebar.isDesktop,
-    
     // Theme state
     theme,
     
     // Modal state
     activeModal,
-    
-    // Sidebar actions
-    toggleSidebar: sidebar.toggleSidebar,
-    openSidebar: sidebar.openSidebar,
-    closeSidebar: sidebar.closeSidebar,
     
     // Theme actions
     setTheme,

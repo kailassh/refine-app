@@ -1,17 +1,27 @@
 /**
- * Chat area component for displaying messages and managing chat interface.
+ * Chat area component for displaying messages with Material-UI components.
  * 
- * Simplified chat area with improved responsive behavior and cleaner layout.
- * Removes complex layout dependencies and focuses on core functionality.
+ * Modern chat area using MUI components with clean theming, 
+ * improved responsive behavior and elegant layout.
  * 
- * @fileoverview Simplified chat area component for message display
+ * @fileoverview Chat area component using MUI components
  */
 
 import React, { useEffect, useRef, useState } from 'react';
+import { 
+  Box, 
+  Button, 
+  Typography, 
+  Stack, 
+  Alert,
+  IconButton,
+  Fab
+} from '@mui/material';
 import { type Chat } from '../../../../types/chat';
 import { MessageBubble } from '../../../ui/MessageBubble';
 import { ChatInput } from '../ChatInput';
 import { ChatLoadingState } from '../../../ui/LoadingIndicator';
+import { MessageCircle, ChevronDown, X } from 'lucide-react';
 
 /**
  * Props interface for the ChatArea component.
@@ -25,8 +35,8 @@ interface ChatAreaProps {
   onSendMessage: (message: string) => void;
   /** Error message to display, if any */
   error?: string | null;
-  /** Additional CSS classes */
-  className?: string;
+  /** Custom styling */
+  sx?: object;
 }
 
 /**
@@ -36,59 +46,83 @@ const EmptyState: React.FC<{
   onGetStarted?: () => void;
 }> = ({ onGetStarted }) => {
   return (
-    <div className="flex flex-col items-center justify-center h-full px-6 text-center">
-      <div className="max-w-md space-y-6">
-        {/* Icon */}
-        <div className="flex justify-center">
-          <div className="flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full">
-            <svg 
-              className="w-8 h-8 text-gray-400" 
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24"
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100%',
+        px: 3,
+        textAlign: 'center'
+      }}
+    >
+      <Box sx={{ maxWidth: 480 }}>
+        <Stack spacing={4}>
+          {/* Icon */}
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 64,
+                height: 64,
+                bgcolor: 'secondary.main',
+                borderRadius: '50%',
+                color: 'secondary.contrastText'
+              }}
             >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={1.5} 
-                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" 
-              />
-            </svg>
-          </div>
-        </div>
+              <MessageCircle size={32} />
+            </Box>
+          </Box>
 
-        {/* Content */}
-        <div className="space-y-3">
-          <h3 className="text-xl font-medium text-gray-900">
-            Welcome to Text Refine Chat
-          </h3>
-          <p className="text-gray-600 leading-relaxed">
-            Start a conversation by typing a message below. I'm here to help you with 
-            text refinement, writing assistance, and answer any questions you might have.
-          </p>
-        </div>
+          {/* Content */}
+          <Stack spacing={2}>
+            <Typography variant="h5" sx={{ fontWeight: 500, color: 'text.primary' }}>
+              Welcome to Text Refine Chat
+            </Typography>
+            <Typography variant="body1" sx={{ color: 'text.secondary', lineHeight: 1.6 }}>
+              Start a conversation by typing a message below. I'm here to help you with 
+              text refinement, writing assistance, and answer any questions you might have.
+            </Typography>
+          </Stack>
 
-        {/* Example prompts */}
-        <div className="space-y-2">
-          <p className="text-sm text-gray-500 font-medium">Try asking:</p>
-          <div className="space-y-2 text-sm">
-            {[
-              "Help me improve this paragraph",
-              "What's the best way to structure an email?",
-              "Can you help me brainstorm ideas?"
-            ].map((prompt, index) => (
-              <button
-                key={index}
-                onClick={() => onGetStarted?.()}
-                className="block w-full p-3 text-left text-gray-700 bg-gray-50 rounded-lg transition-colors duration-200 hover:bg-gray-100 hover:text-gray-900"
-              >
-                "{prompt}"
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
+          {/* Example prompts */}
+          <Stack spacing={2}>
+            <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500 }}>
+              Try asking:
+            </Typography>
+            <Stack spacing={1}>
+              {[
+                "Help me improve this paragraph",
+                "What's the best way to structure an email?",
+                "Can you help me brainstorm ideas?"
+              ].map((prompt, index) => (
+                <Button
+                  key={index}
+                  variant="text"
+                  onClick={() => onGetStarted?.()}
+                  sx={{
+                    justifyContent: 'flex-start',
+                    textAlign: 'left',
+                    p: 2,
+                    color: 'text.secondary',
+                    '&:hover': {
+                      color: 'text.primary',
+                      bgcolor: 'action.hover'
+                    }
+                  }}
+                  fullWidth
+                >
+                  "{prompt}"
+                </Button>
+              ))}
+            </Stack>
+          </Stack>
+        </Stack>
+      </Box>
+    </Box>
   );
 };
 
@@ -100,26 +134,24 @@ const ErrorBanner: React.FC<{
   onDismiss?: () => void;
 }> = ({ error, onDismiss }) => {
   return (
-    <div className="mx-4 mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <p className="text-sm text-red-700">{error}</p>
-        </div>
-        {onDismiss && (
-          <button
-            onClick={onDismiss}
-            className="text-red-500 hover:text-red-700 transition-colors duration-200"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        )}
-      </div>
-    </div>
+    <Box sx={{ mx: 2, mb: 2 }}>
+      <Alert 
+        severity="error" 
+        action={
+          onDismiss && (
+            <IconButton
+              size="small"
+              onClick={onDismiss}
+              sx={{ color: 'error.main' }}
+            >
+              <X size={16} />
+            </IconButton>
+          )
+        }
+      >
+        {error}
+      </Alert>
+    </Box>
   );
 };
 
@@ -137,7 +169,7 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
   isLoading,
   onSendMessage,
   error,
-  className = ''
+  sx = {}
 }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
@@ -149,26 +181,6 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
    */
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  /**
-   * Check if user is near bottom of messages.
-   */
-  const isNearBottom = () => {
-    const container = messagesContainerRef.current;
-    if (!container) return false;
-    
-    const threshold = 100; // pixels from bottom
-    return container.scrollHeight - container.scrollTop - container.clientHeight < threshold;
-  };
-
-  /**
-   * Handle scroll events to determine auto-scroll behavior.
-   */
-  const handleScroll = () => {
-    const nearBottom = isNearBottom();
-    setShouldAutoScroll(nearBottom);
-    setShowScrollToBottom(!nearBottom && !!(currentChat && currentChat.messages.length > 0));
   };
 
   /**
@@ -195,14 +207,22 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
   // Show loading state for initial load
   if (isLoading && !currentChat) {
     return (
-      <div className={`flex flex-col h-full ${className}`}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', ...sx }}>
         <ChatLoadingState message="Loading chat..." />
-      </div>
+      </Box>
     );
   }
 
   return (
-    <div className={`flex flex-col h-full bg-white ${className}`}>
+    <Box 
+      sx={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        height: '100%', 
+        bgcolor: 'background.default',
+        ...sx 
+      }}
+    >
       {/* Error banner */}
       {error && (
         <ErrorBanner 
@@ -212,50 +232,76 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
       )}
 
       {/* Messages area */}
-      <div className="flex-1 relative overflow-hidden">
+      <Box sx={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
         {currentChat ? (
           <>
             {/* Messages container */}
-            <div
+            <Box 
               ref={messagesContainerRef}
-              onScroll={handleScroll}
-              className="h-full overflow-y-auto scroll-smooth"
+              sx={{ 
+                height: '100%', 
+                overflow: 'auto',
+                '&::-webkit-scrollbar': {
+                  width: '8px'
+                },
+                '&::-webkit-scrollbar-track': {
+                  background: 'transparent'
+                },
+                '&::-webkit-scrollbar-thumb': {
+                  background: 'rgba(0,0,0,0.2)',
+                  borderRadius: '4px'
+                }
+              }}
             >
-              <div className="max-w-4xl px-4 py-6 mx-auto space-y-1">
+              <Box 
+                sx={{ 
+                  maxWidth: 1024, 
+                  px: 2, 
+                  py: 3, 
+                  mx: 'auto',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 0.5
+                }}
+              >
                 {currentChat.messages.length > 0 ? (
                   <>
                     {currentChat.messages.map((message) => (
                       <MessageBubble key={message.id} message={message} />
                     ))}
                     {/* Scroll anchor */}
-                    <div ref={messagesEndRef} />
+                    <Box ref={messagesEndRef} />
                   </>
                 ) : (
                   <EmptyState />
                 )}
-              </div>
-            </div>
+              </Box>
+            </Box>
 
             {/* Scroll to bottom button */}
             {showScrollToBottom && (
-              <button
+              <Fab
+                size="small"
                 onClick={scrollToBottom}
-                className="absolute bottom-20 right-6 flex items-center justify-center w-10 h-10 bg-white border border-gray-200 rounded-full shadow-lg transition-all duration-200 hover:bg-gray-50 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                sx={{
+                  position: 'absolute',
+                  bottom: 80,
+                  right: 24,
+                  zIndex: 1
+                }}
                 title="Scroll to bottom"
               >
-                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                </svg>
-              </button>
+                <ChevronDown size={20} />
+              </Fab>
             )}
           </>
         ) : (
           <EmptyState />
         )}
-      </div>
+      </Box>
 
       {/* Chat input - always at bottom */}
-      <div className="flex-shrink-0">
+      <Box sx={{ flexShrink: 0 }}>
         <ChatInput
           onSendMessage={onSendMessage}
           isLoading={isLoading}
@@ -266,8 +312,8 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
               : "Start a new conversation..."
           }
         />
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 
