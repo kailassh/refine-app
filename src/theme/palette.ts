@@ -1,11 +1,11 @@
 import { alpha } from '@mui/material/styles';
 
-// Color constants matching the original shadcn color scheme
+// Color constants using mild to light teal shades
 const colors = {
   primary: {
-    main: 'hsl(173, 80%, 40%)',    // --primary from original theme
-    light: 'hsl(173, 80%, 50%)',
-    dark: 'hsl(173, 80%, 30%)',
+    main: 'hsl(173, 60%, 45%)',    // mild teal as main primary
+    light: 'hsl(173, 40%, 60%)',   // light teal for lighter variants
+    dark: 'hsl(173, 70%, 35%)',    // slightly darker teal
     contrastText: 'hsl(0, 0%, 98%)', // --primary-foreground
   },
   secondary: {
@@ -33,9 +33,9 @@ const colors = {
 
 const darkColors = {
   primary: {
-    main: 'hsl(173, 80%, 40%)',    // same primary in dark mode
-    light: 'hsl(173, 80%, 50%)',
-    dark: 'hsl(173, 80%, 30%)',
+    main: 'hsl(173, 55%, 50%)',    // slightly brighter teal for dark mode
+    light: 'hsl(173, 45%, 65%)',   // light teal for dark mode
+    dark: 'hsl(173, 65%, 40%)',    // darker teal for dark mode
     contrastText: 'hsl(240, 5.9%, 10%)',
   },
   secondary: {

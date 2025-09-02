@@ -11,12 +11,9 @@ import React, { useState, type KeyboardEvent } from 'react';
 import { 
   Box, 
   TextField, 
-  IconButton, 
   Typography, 
   Stack
 } from '@mui/material';
-import { SpinningLoader } from '../../../ui/LoadingIndicator';
-import { Send } from 'lucide-react';
 
 /**
  * Props interface for the ChatInput component.
@@ -88,7 +85,6 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   };
 
   const isDisabled = disabled || isLoading;
-  const canSend = message.trim().length > 0 && !isDisabled;
 
   return (
     <Box 
@@ -108,70 +104,47 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         }}
       >
         <Stack spacing={1}>
-          <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: 1.5 }}>
-            {/* Text input area */}
-            <Box sx={{ flex: 1, position: 'relative' }}>
-              <TextField
-                multiline
-                minRows={1}
-                maxRows={6}
-                value={message}
-                onChange={handleInputChange}
-                onKeyDown={handleKeyDown}
-                placeholder={placeholder}
-                disabled={isDisabled}
-                fullWidth
-                variant="outlined"
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    '&.Mui-focused fieldset': {
-                      borderColor: message.length > 0 ? 'primary.main' : 'divider',
-                    },
+          {/* Text input area */}
+          <Box sx={{ position: 'relative' }}>
+            <TextField
+              multiline
+              minRows={1}
+              maxRows={6}
+              value={message}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
+              placeholder={placeholder}
+              disabled={isDisabled}
+              fullWidth
+              variant="outlined"
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '&.Mui-focused fieldset': {
+                    borderColor: 'primary.main',
                   },
-                  '& .MuiInputBase-input': {
-                    lineHeight: 1.4,
-                    py: 1.5,
-                  },
-                }}
-                aria-label="Chat message input"
-              />
-              
-              {/* Character counter for very long messages */}
-              {message.length > 500 && (
-                <Typography 
-                  variant="caption" 
-                  sx={{ 
-                    position: 'absolute', 
-                    bottom: 6, 
-                    right: 8, 
-                    color: 'text.secondary',
-                    fontSize: '0.75rem'
-                  }}
-                >
-                  {message.length}/2000
-                </Typography>
-              )}
-            </Box>
-
-            {/* Send button */}
-            <IconButton
-              onClick={handleSend}
-              disabled={!canSend}
-              color="primary"
-              sx={{ 
-                height: 40, 
-                width: 40,
-                flexShrink: 0
+                },
+                '& .MuiInputBase-input': {
+                  lineHeight: 1.4,
+                },
               }}
-              aria-label={isLoading ? 'Sending message' : 'Send message'}
-              title={isLoading ? 'Sending...' : 'Send message (Enter)'}
-            >
-              {isLoading ? (
-                <SpinningLoader size="small" />
-              ) : (
-                <Send size={20} />
-              )}
-            </IconButton>
+              aria-label="Chat message input"
+            />
+            
+            {/* Character counter for very long messages */}
+            {message.length > 500 && (
+              <Typography 
+                variant="caption" 
+                sx={{ 
+                  position: 'absolute', 
+                  bottom: 6, 
+                  right: 8, 
+                  color: 'text.secondary',
+                  fontSize: '0.75rem'
+                }}
+              >
+                {message.length}/2000
+              </Typography>
+            )}
           </Box>
 
           {/* Help text */}

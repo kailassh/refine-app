@@ -16,7 +16,7 @@ export const components: Components<Omit<Theme, 'components'>> = {
         },
         '&:focus-visible': {
           outline: '3px solid',
-          outlineColor: 'hsl(173, 80%, 40%)',
+          outlineColor: 'hsl(173, 60%, 45%)', // updated to match new primary color
           outlineOffset: '2px',
         },
       },
@@ -32,19 +32,19 @@ export const components: Components<Omit<Theme, 'components'>> = {
       },
       contained: {
         '&:hover': {
-          backgroundColor: 'hsl(173, 80%, 35%)',
+          backgroundColor: 'hsl(173, 70%, 35%)', // updated to match new primary dark shade
         },
       },
       outlined: {
         borderColor: 'hsl(240, 5.9%, 90%)',
         '&:hover': {
-          borderColor: 'hsl(173, 80%, 40%)',
-          backgroundColor: 'hsl(173, 80%, 96%)',
+          borderColor: 'hsl(173, 60%, 45%)', // updated to match new primary
+          backgroundColor: 'hsl(173, 40%, 96%)', // lighter teal background
         },
       },
       text: {
         '&:hover': {
-          backgroundColor: 'hsl(173, 80%, 96%)',
+          backgroundColor: 'hsl(173, 40%, 96%)', // lighter teal background
         },
       },
     },
@@ -63,7 +63,7 @@ export const components: Components<Omit<Theme, 'components'>> = {
             borderColor: 'hsl(240, 5.9%, 70%)',
           },
           '&.Mui-focused fieldset': {
-            borderColor: 'hsl(173, 80%, 40%)',
+            borderColor: 'hsl(173, 60%, 45%)', // updated to match new primary
             borderWidth: '2px',
           },
           '&.Mui-error fieldset': {
@@ -115,7 +115,7 @@ export const components: Components<Omit<Theme, 'components'>> = {
         fontWeight: 500,
         marginBottom: '0.5rem',
         '&.Mui-focused': {
-          color: 'hsl(173, 80%, 40%)',
+          color: 'hsl(173, 60%, 45%)', // updated to match new primary
         },
       },
     },

@@ -8,13 +8,13 @@
  */
 
 import React, { useState } from 'react';
-import { 
-  AppBar, 
-  Toolbar, 
-  Avatar, 
-  Button, 
-  Menu, 
-  MenuItem, 
+import {
+  AppBar,
+  Toolbar,
+  Avatar,
+  Button,
+  Menu,
+  MenuItem,
   ListItemIcon,
   ListItemText,
   CircularProgress,
@@ -81,31 +81,38 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   /**
+   * Type guard to check if user has Supabase user_metadata
+   */
+  const isSupabaseUser = (user: User): user is User & { user_metadata?: Record<string, unknown> } => {
+    return 'user_metadata' in user;
+  };
+
+  /**
    * Get user initials for avatar.
    */
   const getUserInitials = (user: User) => {
     // Handle user_metadata if it exists (for Supabase users)
-    if ((user as any).user_metadata?.full_name) {
-      return (user as any).user_metadata.full_name
+    if (isSupabaseUser(user) && user.user_metadata?.full_name && typeof user.user_metadata.full_name === 'string') {
+      return user.user_metadata.full_name
         .split(' ')
         .map((n: string) => n[0])
         .join('')
         .toUpperCase()
         .slice(0, 2);
     }
-    return user.email?.charAt(0).toUpperCase() || 'U';
+    return user.email?.charAt(0).toUpperCase() || 'K';
   };
 
   return (
-    <AppBar 
-      position="static" 
+    <AppBar
+      position="static"
       elevation={0}
-      sx={{ 
-        bgcolor: 'background.paper', 
-        borderBottom: 1, 
+      sx={{
+        bgcolor: 'background.paper',
+        borderBottom: 1,
         borderColor: 'divider',
         color: 'text.primary',
-        ...sx 
+        ...sx
       }}
     >
       <Toolbar sx={{ maxWidth: 1200, mx: 'auto', width: '100%', px: { xs: 2, sm: 3 } }}>
@@ -122,11 +129,11 @@ export const Header: React.FC<HeaderProps> = ({
               <Button
                 onClick={handleMenuOpen}
                 variant="text"
-                sx={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  gap: 1.5, 
-                  px: 1.5, 
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1.5,
+                  px: 1.5,
                   py: 1,
                   minWidth: 'auto',
                   color: 'text.primary'
@@ -136,10 +143,10 @@ export const Header: React.FC<HeaderProps> = ({
                 aria-label="User menu"
               >
                 {/* User avatar */}
-                <Avatar 
-                  sx={{ 
-                    width: 32, 
-                    height: 32, 
+                <Avatar
+                  sx={{
+                    width: 32,
+                    height: 32,
                     bgcolor: 'secondary.main',
                     color: 'secondary.contrastText',
                     fontSize: '0.875rem'
@@ -147,21 +154,7 @@ export const Header: React.FC<HeaderProps> = ({
                 >
                   {getUserInitials(user)}
                 </Avatar>
-                
-                {/* User email */}
-                <Box 
-                  sx={{ 
-                    display: { xs: 'none', sm: 'block' }, 
-                    maxWidth: 160, 
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap'
-                  }}
-                  component="span"
-                >
-                  {user.email}
-                </Box>
-                
+
                 {/* Dropdown arrow */}
                 <ChevronDown
                   size={16}

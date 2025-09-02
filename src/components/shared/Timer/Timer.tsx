@@ -56,20 +56,20 @@ export const Timer: React.FC<TimerProps> = ({
   // Calculate progress percentage (0-100)
   const progressPercentage = Math.max(0, ((totalDuration - timeRemaining) / totalDuration) * 100);
   
-  // Determine color based on remaining time
+  // Determine color based on remaining time (teal -> orange -> red)
   const getTimerColor = () => {
     const timePercent = (timeRemaining / totalDuration) * 100;
-    if (timePercent > 50) return 'success.main';
-    if (timePercent > 25) return 'warning.main';
-    return 'error.main';
+    if (timePercent > 66) return 'primary.main'; // teal for >66%
+    if (timePercent > 33) return 'hsl(36, 100%, 50%)'; // orange for 33-66%
+    return 'error.main'; // red for <33%
   };
   
-  // Determine progress bar color
+  // Determine progress bar color (teal -> orange -> red)
   const getProgressColor = () => {
     const timePercent = (timeRemaining / totalDuration) * 100;
-    if (timePercent > 50) return 'success';
-    if (timePercent > 25) return 'warning';
-    return 'error';
+    if (timePercent > 66) return 'primary'; // teal
+    if (timePercent > 33) return 'warning'; // orange 
+    return 'error'; // red
   };
 
   if (!isActive) {
@@ -91,7 +91,8 @@ export const Timer: React.FC<TimerProps> = ({
         variant="h6"
         sx={{
           fontWeight: 500,
-          color: getTimerColor()
+          color: getTimerColor(),
+          transition: 'color 0.5s ease-in-out'
         }}
       >
         {formatTime(timeRemaining)}
