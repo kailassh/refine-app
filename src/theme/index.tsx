@@ -6,6 +6,7 @@ import { components } from './components';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 // Theme creation functions
+// eslint-disable-next-line react-refresh/only-export-components
 export const createLightTheme = () => createTheme({
   palette: lightPalette,
   typography,
@@ -25,6 +26,7 @@ export const createLightTheme = () => createTheme({
   },
 });
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const createDarkTheme = () => createTheme({
   palette: darkPalette,
   typography,
@@ -55,6 +57,7 @@ const ThemeContext = createContext<ThemeContextType>({
   toggleTheme: () => {},
 });
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useThemeMode = () => useContext(ThemeContext);
 
 // Theme provider component
@@ -98,5 +101,7 @@ export const MuiThemeProvider: React.FC<MuiThemeProviderProps> = ({ children }) 
 };
 
 // Export themes for direct use
+// eslint-disable-next-line react-refresh/only-export-components
 export const lightTheme = createLightTheme();
+// eslint-disable-next-line react-refresh/only-export-components
 export const darkTheme = createDarkTheme();

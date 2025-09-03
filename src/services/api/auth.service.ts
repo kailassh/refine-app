@@ -7,6 +7,7 @@
 
 import { type User } from '../../types/auth';
 import { AUTH_ERRORS, AUTH_ERROR_MESSAGES, API_CONSTANTS } from '../../utils/constants';
+import { errorService } from '../error';
 
 /**
  * Authentication service interface.
@@ -88,7 +89,7 @@ export const createAuthService = (implementation: AuthService): AuthService => {
         return await implementation.refreshSession();
       } catch (error) {
         // Don't throw on refresh errors, just return null
-        console.error('Session refresh failed:', error);
+        errorService.warn('Session refresh failed', 'AuthService', error);
         return null;
       }
     },

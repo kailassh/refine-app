@@ -6,6 +6,7 @@
  */
 
 import React, { createContext, useContext, type ReactNode } from 'react';
+import { ErrorUtils } from '../services/error';
 
 /**
  * Theme options.
@@ -80,7 +81,7 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
         setThemeState(savedTheme);
       }
     } catch (error) {
-      console.error('Failed to load theme from localStorage:', error);
+      ErrorUtils.handleStorageError('read', 'ui-theme', error);
     }
   }, []);
   
@@ -112,6 +113,7 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
  * @returns UI context value with state and methods
  * @throws Error if used outside of UIProvider
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export const useUIContext = (): UIContextValue => {
   const context = useContext(UIContext);
   

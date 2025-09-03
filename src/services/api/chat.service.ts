@@ -16,6 +16,7 @@ import {
   type MessageSender
 } from '../../types/chat';
 import { STORAGE_KEYS, CHAT_DEFAULTS } from '../../utils/constants';
+import { ErrorUtils } from '../error';
 
 /**
  * Mock AI responses for realistic chat simulation.
@@ -91,7 +92,7 @@ export class ChatService {
         }))
       }));
     } catch (error) {
-      console.error('Failed to load chats from localStorage:', error);
+      ErrorUtils.handleStorageError('read', STORAGE_KEYS.CHATS, error);
       return [];
     }
   }
@@ -110,7 +111,7 @@ export class ChatService {
 
       localStorage.setItem(STORAGE_KEYS.CHATS, JSON.stringify(chatsToSave));
     } catch (error) {
-      console.error('Failed to save chats to localStorage:', error);
+      ErrorUtils.handleStorageError('write', STORAGE_KEYS.CHATS, error);
     }
   }
 
@@ -121,7 +122,7 @@ export class ChatService {
     try {
       return localStorage.getItem(STORAGE_KEYS.CURRENT_CHAT_ID);
     } catch (error) {
-      console.error('Failed to load current chat ID:', error);
+      ErrorUtils.handleStorageError('read', STORAGE_KEYS.CURRENT_CHAT_ID, error);
       return null;
     }
   }
@@ -137,7 +138,7 @@ export class ChatService {
         localStorage.removeItem(STORAGE_KEYS.CURRENT_CHAT_ID);
       }
     } catch (error) {
-      console.error('Failed to save current chat ID:', error);
+      ErrorUtils.handleStorageError('write', STORAGE_KEYS.CURRENT_CHAT_ID, error);
     }
   }
 
@@ -247,7 +248,7 @@ export class ChatService {
       localStorage.removeItem(STORAGE_KEYS.CHATS);
       localStorage.removeItem(STORAGE_KEYS.CURRENT_CHAT_ID);
     } catch (error) {
-      console.error('Failed to clear chats:', error);
+      ErrorUtils.handleStorageError('remove', 'chats', error);
     }
   }
 

@@ -15,6 +15,7 @@ import {
   type MessageSender
 } from '../../types/chat';
 import { chatService } from '../../services/api/chat.service';
+import { ErrorUtils } from '../../services/error';
 
 /**
  * Custom hook for chat state management and operations.
@@ -52,7 +53,7 @@ export const useChat = () => {
           currentChat
         }));
       } catch (error) {
-        console.error('Failed to load initial chat state:', error);
+        ErrorUtils.handleAsyncError('Load initial chat state', error, 'ChatHook');
         setChatState(prev => ({
           ...prev,
           error: 'Failed to load chat history'
@@ -251,7 +252,7 @@ export const useChat = () => {
         setError(aiResponse.error || 'Failed to generate response');
       }
     } catch (error) {
-      console.error('Failed to send message:', error);
+      ErrorUtils.handleAsyncError('Send message', error, 'ChatHook');
       setError('Failed to send message. Please try again.');
     } finally {
       setChatState(prev => ({ ...prev, isLoading: false }));

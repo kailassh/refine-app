@@ -7,7 +7,7 @@
  * @fileoverview Header navigation component with MUI
  */
 
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -47,7 +47,7 @@ interface HeaderProps {
  * @param props - Component props including user data and callbacks
  * @returns JSX element representing the header navigation
  */
-export const Header: React.FC<HeaderProps> = ({
+export const Header: React.FC<HeaderProps> = React.memo(({
   user,
   onSignOut,
   isSigningOut = false,
@@ -58,27 +58,30 @@ export const Header: React.FC<HeaderProps> = ({
 
   /**
    * Handles menu open.
+   * Memoized to prevent unnecessary re-creation on each render.
    */
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+  const handleMenuOpen = useCallback((event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
-  };
+  }, []);
 
   /**
    * Handles menu close.
+   * Memoized to prevent unnecessary re-creation on each render.
    */
-  const handleMenuClose = () => {
+  const handleMenuClose = useCallback(() => {
     setAnchorEl(null);
-  };
+  }, []);
 
   /**
    * Handles sign out button click.
+   * Memoized to prevent unnecessary re-creation on each render.
    */
-  const handleSignOutClick = () => {
+  const handleSignOutClick = useCallback(() => {
     handleMenuClose();
     if (onSignOut) {
       onSignOut();
     }
-  };
+  }, [handleMenuClose, onSignOut]);
 
   /**
    * Type guard to check if user has Supabase user_metadata
@@ -89,8 +92,11 @@ export const Header: React.FC<HeaderProps> = ({
 
   /**
    * Get user initials for avatar.
+   * Memoized to prevent unnecessary re-computation when user data changes.
    */
-  const getUserInitials = (user: User) => {
+  const userInitials = useMemo(() => {
+    if (!user) return 'K';
+    
     // Handle user_metadata if it exists (for Supabase users)
     if (isSupabaseUser(user) && user.user_metadata?.full_name && typeof user.user_metadata.full_name === 'string') {
       return user.user_metadata.full_name
@@ -101,7 +107,7 @@ export const Header: React.FC<HeaderProps> = ({
         .slice(0, 2);
     }
     return user.email?.charAt(0).toUpperCase() || 'K';
-  };
+  }, [user]);
 
   return (
     <AppBar
@@ -152,7 +158,7 @@ export const Header: React.FC<HeaderProps> = ({
                     fontSize: '0.875rem'
                   }}
                 >
-                  {getUserInitials(user)}
+                  {userInitials}
                 </Avatar>
 
                 {/* Dropdown arrow */}
@@ -203,6 +209,6 @@ export const Header: React.FC<HeaderProps> = ({
       </Toolbar>
     </AppBar>
   );
-};
+});
 
 export default Header;

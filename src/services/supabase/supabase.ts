@@ -19,6 +19,7 @@ import {
   type AuthErrorCode
 } from '../../types/auth';
 import { supabase } from './client';
+import { errorService } from '../error';
 
 /**
  * Supabase authentication service class.
@@ -54,7 +55,7 @@ export class SupabaseAuthService {
 
       // If successful, return the result (existing user got OTP)
       if (!firstAttemptError) {
-        console.log('✅ Existing user - sent OTP email');
+        errorService.info('OTP email sent to existing user', 'SupabaseAuth');
         return {
           data: {
             user: firstAttemptData.user as SupabaseUser | null,
@@ -73,7 +74,7 @@ export class SupabaseAuthService {
         };
       }
 
-      console.log('ℹ️ User not found - attempting to create new user');
+      errorService.info('User not found - creating new user', 'SupabaseAuth');
 
       // Step 2: Try signInWithOtp with user creation enabled
       const { data: secondAttemptData, error: secondAttemptError } = await supabase.auth.signInWithOtp({
@@ -93,7 +94,7 @@ export class SupabaseAuthService {
         };
       }
 
-      console.log('✅ New user created - sent OTP email');
+      errorService.info('New user created - OTP email sent', 'SupabaseAuth');
       return {
         data: {
           user: secondAttemptData.user as SupabaseUser | null,
@@ -230,7 +231,7 @@ export class SupabaseAuthService {
     try {
       localStorage.setItem('supabase_session', JSON.stringify(session));
     } catch (error) {
-      console.warn('Failed to store session in localStorage:', error);
+      errorService.warn('Failed to store session in localStorage', 'SupabaseAuth', error);
     }
   }
 
@@ -244,13 +245,13 @@ export class SupabaseAuthService {
       const { data: { session }, error } = await supabase.auth.getSession();
       
       if (error) {
-        console.warn('Failed to retrieve session from Supabase:', error);
+        errorService.warn('Failed to retrieve session from Supabase', 'SupabaseAuth', error);
         return null;
       }
 
       return session as SupabaseSession | null;
     } catch (error) {
-      console.warn('Failed to retrieve session:', error);
+      errorService.warn('Failed to retrieve session', 'SupabaseAuth', error);
       return null;
     }
   }
@@ -264,7 +265,7 @@ export class SupabaseAuthService {
       // but we can also manually clear localStorage if needed
       localStorage.removeItem('sb-dekxjqitigrjlnfrotqb-auth-token');
     } catch (error) {
-      console.warn('Failed to clear session data:', error);
+      errorService.warn('Failed to clear session data', 'SupabaseAuth', error);
     }
   }
 

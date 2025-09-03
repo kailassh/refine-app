@@ -8,7 +8,7 @@
  * @fileoverview Timer component with countdown and progress visualization
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Box, Typography, LinearProgress } from '@mui/material';
 
 /**
@@ -47,30 +47,40 @@ const formatTime = (seconds: number): string => {
  * @param props - Component props including time data and styling
  * @returns JSX element representing the timer
  */
-export const Timer: React.FC<TimerProps> = ({
+export const Timer: React.FC<TimerProps> = React.memo(({
   timeRemaining,
   isActive,
   totalDuration = 120,
   className = ''
 }) => {
-  // Calculate progress percentage (0-100)
-  const progressPercentage = Math.max(0, ((totalDuration - timeRemaining) / totalDuration) * 100);
+  // Memoize calculations to prevent unnecessary re-computation
+  const { progressPercentage, timerColor, progressColor } = useMemo(() => {
+    const progress = Math.max(0, ((totalDuration - timeRemaining) / totalDuration) * 100);
+    const percent = (timeRemaining / totalDuration) * 100;
+    
+    let timer: string;
+    let progressBar: 'primary' | 'warning' | 'error';
+    
+    if (percent > 66) {
+      timer = 'primary.main';
+      progressBar = 'primary';
+    } else if (percent > 33) {
+      timer = 'hsl(36, 100%, 50%)';
+      progressBar = 'warning';
+    } else {
+      timer = 'error.main';
+      progressBar = 'error';
+    }
+    
+    return {
+      progressPercentage: progress,
+      timerColor: timer,
+      progressColor: progressBar
+    };
+  }, [timeRemaining, totalDuration]);
   
-  // Determine color based on remaining time (teal -> orange -> red)
-  const getTimerColor = () => {
-    const timePercent = (timeRemaining / totalDuration) * 100;
-    if (timePercent > 66) return 'primary.main'; // teal for >66%
-    if (timePercent > 33) return 'hsl(36, 100%, 50%)'; // orange for 33-66%
-    return 'error.main'; // red for <33%
-  };
-  
-  // Determine progress bar color (teal -> orange -> red)
-  const getProgressColor = () => {
-    const timePercent = (timeRemaining / totalDuration) * 100;
-    if (timePercent > 66) return 'primary'; // teal
-    if (timePercent > 33) return 'warning'; // orange 
-    return 'error'; // red
-  };
+  // Memoize formatted time to prevent unnecessary re-computation
+  const formattedTime = useMemo(() => formatTime(timeRemaining), [timeRemaining]);
 
   if (!isActive) {
     return null;
@@ -91,11 +101,11 @@ export const Timer: React.FC<TimerProps> = ({
         variant="h6"
         sx={{
           fontWeight: 500,
-          color: getTimerColor(),
+          color: timerColor,
           transition: 'color 0.5s ease-in-out'
         }}
       >
-        {formatTime(timeRemaining)}
+        {formattedTime}
       </Typography>
       
       {/* Progress Bar */}
@@ -103,7 +113,7 @@ export const Timer: React.FC<TimerProps> = ({
         <LinearProgress
           variant="determinate"
           value={progressPercentage}
-          color={getProgressColor()}
+          color={progressColor}
           sx={{
             height: 8,
             borderRadius: 1,
@@ -115,15 +125,8 @@ export const Timer: React.FC<TimerProps> = ({
         />
       </Box>
       
-      {/* Helper Text */}
-      <Typography 
-        variant="body2"
-        sx={{ color: 'text.secondary' }}
-      >
-        Code expires in {formatTime(timeRemaining)}
-      </Typography>
     </Box>
   );
-};
+});
 
 export default Timer;

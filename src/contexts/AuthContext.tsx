@@ -80,6 +80,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
  * @returns Authentication context value with state and methods
  * @throws Error if used outside of AuthProvider
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuthContext = (): AuthContextValue => {
   const context = useContext(AuthContext);
   

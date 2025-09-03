@@ -9,6 +9,7 @@
 
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '../../types/database';
+import { errorService } from '../error';
 
 // Environment variables for Supabase configuration
 const supabaseUrl = import.meta.env.VITE_SUPABASE_PROJECT_URL;
@@ -79,7 +80,7 @@ export const getCurrentSession = async () => {
   const { data: { session }, error } = await supabase.auth.getSession();
 
   if (error) {
-    console.error('Error getting session:', error);
+    errorService.error('Failed to get session', 'SupabaseClient', error);
     return null;
   }
 
@@ -95,7 +96,7 @@ export const getCurrentUser = async () => {
   const { data: { user }, error } = await supabase.auth.getUser();
 
   if (error) {
-    console.error('Error getting user:', error);
+    errorService.error('Failed to get user', 'SupabaseClient', error);
     return null;
   }
 

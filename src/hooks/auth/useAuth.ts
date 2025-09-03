@@ -30,6 +30,7 @@ import { type AuthState, type SupabaseUser } from '../../types/auth';
 import { useSupabaseAuth } from './useSupabaseAuth';
 import SupabaseAuthService from '../../services/supabase/supabase';
 import { supabase } from '../../services/supabase/client';
+import { ErrorUtils } from '../../services/error';
 
 export const useAuth = () => {
   // Initialize authentication state with default values
@@ -244,7 +245,7 @@ export const useAuth = () => {
     try {
       await supabaseAuth.signOut();
     } catch (error) {
-      console.error('Error during logout:', error);
+      ErrorUtils.handleAsyncError('Logout', error, 'AuthHook');
     }
 
     // Reset authentication state to initial values
@@ -283,7 +284,7 @@ export const useAuth = () => {
           setAuthState(prev => ({ ...prev, isLoading: false }));
         }
       } catch (error) {
-        console.error('Error initializing auth:', error);
+        ErrorUtils.handleAsyncError('Auth initialization', error, 'AuthHook');
         setAuthState(prev => ({ ...prev, isLoading: false }));
       }
     };
@@ -295,7 +296,7 @@ export const useAuth = () => {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('Supabase auth event:', event, session);
+        // Note: Auth event received - could be logged if needed
 
         if (event === 'SIGNED_IN' && session?.user) {
           const user = SupabaseAuthService.transformSupabaseUser(session.user as SupabaseUser);

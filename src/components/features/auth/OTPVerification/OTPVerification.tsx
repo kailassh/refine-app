@@ -20,6 +20,7 @@ import {
   Typography
 } from '@mui/material';
 import { type OTPFormData, type ValidationErrors, type OTPTimerState } from '../../../../types/auth';
+import { MUI_SPACING } from '../../../../constants';
 
 /**
  * Props interface for the OTPVerification component.
@@ -83,6 +84,9 @@ export const OTPVerification: React.FC<OTPVerificationProps> = ({
   error = null,
   timerState
 }) => {
+  // Acknowledge email parameter (required for component interface but not displayed)
+  void email;
+  
   // Form data state
   const [formData, setFormData] = useState<OTPFormData>({ otp: '' });
   
@@ -230,23 +234,6 @@ export const OTPVerification: React.FC<OTPVerificationProps> = ({
         >
           Check your email
         </Typography>
-        <Stack spacing={1}>
-          <Typography 
-            variant="h6"
-            sx={{ color: 'text.secondary' }}
-          >
-            We sent a 6-digit code to
-          </Typography>
-          <Typography 
-            variant="body1"
-            sx={{ 
-              fontWeight: 500,
-              color: 'text.primary'
-            }}
-          >
-            {email}
-          </Typography>
-        </Stack>
       </Stack>
 
       {/* Timer Section */}
@@ -264,25 +251,16 @@ export const OTPVerification: React.FC<OTPVerificationProps> = ({
           <Stack spacing={2}>
             {/* OTP Input Field */}
             <Box sx={{ textAlign: 'center' }}>
-            <label htmlFor="otp" className="sr-only">
-              6-digit verification code
-            </label>
             <TextField
               inputRef={otpInputRef}
               id="otp"
               type="text"
               inputMode="numeric"
               inputProps={{
-                pattern: "[0-9]*",
                 maxLength: 6,
-                style: {
-                  textAlign: 'center',
-                  fontSize: '1.5rem',
-                  fontFamily: 'monospace',
-                  letterSpacing: '0.5em',
-                  paddingLeft: '0.25em'
-                }
+                pattern: "[0-9]*"
               }}
+              /* TODO: Migrate to slotProps when MUI v6+ fully supports it */
               placeholder="000000"
               value={formData.otp}
               onChange={handleOTPChange}
@@ -295,6 +273,13 @@ export const OTPVerification: React.FC<OTPVerificationProps> = ({
                 width: '100%',
                 maxWidth: 240,
                 mx: 'auto',
+                '& input': {
+                  textAlign: 'center',
+                  fontSize: '1.5rem',
+                  fontFamily: 'monospace',
+                  letterSpacing: '0.5em',
+                  paddingLeft: '0.25em'
+                },
                 '& .MuiOutlinedInput-root': {
                   borderRadius: 2,
                   '&.Mui-error fieldset': {
@@ -302,7 +287,7 @@ export const OTPVerification: React.FC<OTPVerificationProps> = ({
                   },
                 },
               }}
-              aria-label="6-digit verification code"
+              aria-label="Verification code"
               autoComplete="one-time-code"
               autoFocus
             />
@@ -315,7 +300,7 @@ export const OTPVerification: React.FC<OTPVerificationProps> = ({
               disabled={isLoading || !!validationErrors.otp || formData.otp.length !== 6}
               fullWidth
               size="large"
-              sx={{ py: 1.5, fontWeight: 500, mt: 2 }}
+              sx={{ py: MUI_SPACING.ONE_HALF, fontWeight: 500, mt: MUI_SPACING.TWO }}
             >
               {isLoading ? (
                 <Stack direction="row" alignItems="center" spacing={1}>
@@ -352,8 +337,8 @@ export const OTPVerification: React.FC<OTPVerificationProps> = ({
             onClick={handleResendClick}
             disabled={!timerState.canResend || isLoading}
             sx={{
-              px: 1,
-              py: 0.5,
+              px: MUI_SPACING.ONE,
+              py: MUI_SPACING.HALF,
               fontSize: '0.875rem',
               fontWeight: 500,
               color: timerState.canResend && !isLoading ? 'text.primary' : 'text.disabled',
@@ -378,8 +363,8 @@ export const OTPVerification: React.FC<OTPVerificationProps> = ({
             onClick={handleGoBackClick}
             disabled={isLoading}
             sx={{
-              px: 1,
-              py: 0.5,
+              px: MUI_SPACING.ONE,
+              py: MUI_SPACING.HALF,
               fontSize: '0.875rem',
               color: 'text.secondary',
               '&:hover': {

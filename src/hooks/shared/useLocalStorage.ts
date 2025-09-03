@@ -6,6 +6,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
+import { ErrorUtils } from '../../services/error';
 
 /**
  * Generic hook for managing localStorage values.
@@ -28,7 +29,7 @@ export const useLocalStorage = <T>(
       const item = window.localStorage.getItem(key);
       return item ? JSON.parse(item) : initialValue;
     } catch (error) {
-      console.error(`Error reading localStorage key "${key}":`, error);
+      ErrorUtils.handleStorageError('read', key, error);
       return initialValue;
     }
   });
@@ -46,7 +47,7 @@ export const useLocalStorage = <T>(
           window.localStorage.setItem(key, JSON.stringify(valueToStore));
         }
       } catch (error) {
-        console.error(`Error setting localStorage key "${key}":`, error);
+        ErrorUtils.handleStorageError('write', key, error);
       }
     },
     [key, storedValue]
@@ -61,7 +62,7 @@ export const useLocalStorage = <T>(
         window.localStorage.removeItem(key);
       }
     } catch (error) {
-      console.error(`Error removing localStorage key "${key}":`, error);
+      ErrorUtils.handleStorageError('remove', key, error);
     }
   }, [key, initialValue]);
 
@@ -76,7 +77,7 @@ export const useLocalStorage = <T>(
         try {
           setStoredValue(JSON.parse(e.newValue));
         } catch (error) {
-          console.error(`Error parsing storage change for key "${key}":`, error);
+          ErrorUtils.handleStorageError('read', key, error);
         }
       }
     };

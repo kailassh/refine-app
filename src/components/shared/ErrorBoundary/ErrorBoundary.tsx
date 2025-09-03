@@ -9,6 +9,7 @@
 import React, { Component, type ReactNode } from 'react';
 import { Box, Typography, Button, Stack, Alert } from '@mui/material';
 import { ErrorOutline as ErrorOutlineIcon } from '@mui/icons-material';
+import { errorService } from '../../../services/error';
 
 /**
  * Props interface for ErrorBoundary component.
@@ -60,7 +61,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
    */
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
     // Log error details
-    console.error('ErrorBoundary caught an error:', error, errorInfo);
+    errorService.logError(error, 'ErrorBoundary', errorInfo);
     
     // Call optional error callback
     if (this.props.onError) {

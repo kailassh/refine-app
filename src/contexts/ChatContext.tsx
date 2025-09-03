@@ -82,6 +82,7 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
  * @returns Chat context value with state and methods
  * @throws Error if used outside of ChatProvider
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export const useChatContext = (): ChatContextValue => {
   const context = useContext(ChatContext);
   

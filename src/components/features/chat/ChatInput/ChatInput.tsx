@@ -7,7 +7,7 @@
  * @fileoverview Auto-resizing chat input component using MUI
  */
 
-import React, { useState, type KeyboardEvent } from 'react';
+import React, { useState, useCallback, useMemo, type KeyboardEvent } from 'react';
 import { 
   Box, 
   TextField, 
@@ -41,7 +41,7 @@ interface ChatInputProps {
  * @param props - Component props including callbacks and state
  * @returns JSX element representing the chat input interface
  */
-export const ChatInput: React.FC<ChatInputProps> = ({
+export const ChatInput: React.FC<ChatInputProps> = React.memo(({
   onSendMessage,
   isLoading = false,
   placeholder = "Type your message...",
@@ -52,18 +52,20 @@ export const ChatInput: React.FC<ChatInputProps> = ({
 
   /**
    * Handle form submission or Enter key press.
+   * Memoized to prevent unnecessary re-renders of child components.
    */
-  const handleSend = () => {
+  const handleSend = useCallback(() => {
     if (!message.trim() || isLoading || disabled) return;
     
     onSendMessage(message.trim());
     setMessage('');
-  };
+  }, [message, isLoading, disabled, onSendMessage]);
 
   /**
    * Handle keyboard events in the TextField.
+   * Memoized to prevent unnecessary re-creation on each render.
    */
-  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+  const handleKeyDown = useCallback((event: KeyboardEvent<HTMLDivElement>) => {
     // Send message on Enter (without Shift)
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
@@ -75,16 +77,18 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     if (event.key === 'Enter' && event.shiftKey) {
       return; // Let default behavior handle the new line
     }
-  };
+  }, [handleSend]);
 
   /**
    * Handle input change and update message state.
+   * Memoized to prevent unnecessary re-creation on each render.
    */
-  const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleInputChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(event.target.value);
-  };
+  }, []);
 
-  const isDisabled = disabled || isLoading;
+  // Memoize computed disabled state to prevent unnecessary re-calculations
+  const isDisabled = useMemo(() => disabled || isLoading, [disabled, isLoading]);
 
   return (
     <Box 
@@ -173,6 +177,6 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       </Box>
     </Box>
   );
-};
+});
 
 export default ChatInput;

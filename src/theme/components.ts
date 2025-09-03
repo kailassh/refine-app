@@ -1,23 +1,24 @@
 import type { Components, Theme } from '@mui/material/styles';
+import { BORDER_RADIUS, MUI_SPACING, FONT_WEIGHTS, FOCUS_CONFIG } from '../constants';
 
 export const components: Components<Omit<Theme, 'components'>> = {
   // Button component overrides
   MuiButton: {
     styleOverrides: {
       root: {
-        borderRadius: '0.5rem', // --radius from original theme
+        borderRadius: `${BORDER_RADIUS.MD}px`,
         textTransform: 'none',
-        fontWeight: 500,
-        padding: '0.5rem 1rem',
-        minHeight: '2.25rem',
+        fontWeight: FONT_WEIGHTS.MEDIUM,
+        padding: `${MUI_SPACING.HALF}px ${MUI_SPACING.ONE}px`,
+        minHeight: `${MUI_SPACING.TWO + MUI_SPACING.HALF}px`,
         boxShadow: 'none',
         '&:hover': {
           boxShadow: 'none',
         },
         '&:focus-visible': {
-          outline: '3px solid',
-          outlineColor: 'hsl(173, 60%, 45%)', // updated to match new primary color
-          outlineOffset: '2px',
+          outline: `${FOCUS_CONFIG.OUTLINE_WIDTH}px ${FOCUS_CONFIG.OUTLINE_STYLE}`,
+          outlineColor: 'primary.main',
+          outlineOffset: `${FOCUS_CONFIG.OUTLINE_OFFSET}px`,
         },
       },
       sizeSmall: {
@@ -78,7 +79,7 @@ export const components: Components<Omit<Theme, 'components'>> = {
   MuiCard: {
     styleOverrides: {
       root: {
-        borderRadius: '0.75rem',
+        borderRadius: `${BORDER_RADIUS.LG}px`,
         border: '1px solid hsl(240, 5.9%, 90%)',
         boxShadow: 'none',
       },
@@ -89,7 +90,7 @@ export const components: Components<Omit<Theme, 'components'>> = {
   MuiPaper: {
     styleOverrides: {
       root: {
-        borderRadius: '0.5rem',
+        borderRadius: `${BORDER_RADIUS.MD}px`,
       },
       elevation1: {
         boxShadow: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
@@ -112,7 +113,7 @@ export const components: Components<Omit<Theme, 'components'>> = {
     styleOverrides: {
       root: {
         fontSize: '0.875rem',
-        fontWeight: 500,
+        fontWeight: FONT_WEIGHTS.MEDIUM,
         marginBottom: '0.5rem',
         '&.Mui-focused': {
           color: 'hsl(173, 60%, 45%)', // updated to match new primary
